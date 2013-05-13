@@ -4,11 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace TaskRunner.Tasks.Test
 {
     [TestClass]
-    public class UnitTest1
+    public class JobTest
     {
-        [TestMethod]
-        public void TestMethod1()
-        {
-        }
     }
 }
