@@ -8,12 +8,12 @@ namespace TaskRunner.Tasks
 {
     public class SynchronizationContextTaskScheduler : TaskScheduler
     {
-        private ConcurrentQueue<Task> _tasks = new ConcurrentQueue<Task>();
         private SynchronizationContext _context;
 
-        public SynchronizationContextTaskScheduler() :
-            this(SynchronizationContext.Current)
+        public SynchronizationContextTaskScheduler()
+            : this(SynchronizationContext.Current)
         {
+            Tasks = new ConcurrentQueue<Task>();
         }
 
         public SynchronizationContextTaskScheduler(SynchronizationContext context)
@@ -24,6 +24,8 @@ namespace TaskRunner.Tasks
             }
 
             _context = context;
+
+            Tasks = new ConcurrentQueue<Task>();
         }
 
         public override int MaximumConcurrencyLevel
@@ -31,14 +33,16 @@ namespace TaskRunner.Tasks
             get { return 1; }
         }
 
+        protected ConcurrentQueue<Task> Tasks { get; set; }
+
         protected override void QueueTask(Task task)
         {
-            _tasks.Enqueue(task);
+            Tasks.Enqueue(task);
 
             _context.Post(delegate
             {
                 Task toExecute;
-                if (_tasks.TryDequeue(out toExecute)) TryExecuteTask(toExecute);
+                if (Tasks.TryDequeue(out toExecute)) TryExecuteTask(toExecute);
             }, null);
         }
 
@@ -49,7 +53,16 @@ namespace TaskRunner.Tasks
 
         protected override IEnumerable<Task> GetScheduledTasks()
         {
-            return _tasks.ToArray();
+            return Tasks.ToArray();
+        }
+    }
+
+    public class JobTaskScheduler : SynchronizationContextTaskScheduler
+    {
+        public JobTaskScheduler(ConcurrentQueue<Task> jobQueue)
+            : base(SynchronizationContext.Current)
+        {
+            Tasks = jobQueue;
         }
     }
 }

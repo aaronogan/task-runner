@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TaskRunner.Tasks;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace TaskRunner.Tasks.Test
 {
@@ -12,7 +13,8 @@ namespace TaskRunner.Tasks.Test
         [TestMethod]
         public void Execute_Returns_Proper_Number_Of_Results_For_No_Jobs()
         {
-            var runner = new DefaultJobRunnerImpl();
+            var context = new SynchronizationContext();
+            var runner = new DefaultJobRunnerImpl(context);
             var jobs = new List<Job>();
 
             var results = new List<JobResult>(runner.Execute(jobs));
@@ -23,7 +25,8 @@ namespace TaskRunner.Tasks.Test
         [TestMethod]
         public void Execute_Return_Proper_Number_Of_Results_For_Two_Jobs()
         {
-            var runner = new DefaultJobRunnerImpl();
+            var context = new SynchronizationContext();
+            var runner = new DefaultJobRunnerImpl(context);
             var jobs = GetJobs();
 
             var results = new List<JobResult>(runner.Execute(jobs));
