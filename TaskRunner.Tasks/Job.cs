@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TaskRunner.Tasks
@@ -12,11 +14,14 @@ namespace TaskRunner.Tasks
 
         public virtual void Execute()
         {
-        
+            foreach (var job in Jobs)
+            {
+                job.Execute();
+            }
         }
     }
 
-    public class JobBase : Job
+    public abstract class JobBase : Job
     {
         public JobBase(string name, int maxDurationMinutes)
         {
@@ -27,9 +32,50 @@ namespace TaskRunner.Tasks
         public string Name { get; set; }
         public int MaxDurationMinutes { get; set; }
 
-        public virtual JobResult Execute()
+        protected abstract void OnExecuteBegin();
+        protected abstract void OnExecuteEnd();
+        protected abstract void ExecuteJob();
+        protected abstract JobResult GetResult();
+
+        public JobResult Execute()
         {
-            throw new NotImplementedException();
+            OnExecuteBegin();
+            ExecuteJob();
+            OnExecuteEnd();
+            return GetResult();
+        }
+    }
+
+    public class DefaultJobImpl : JobBase
+    {
+        public DefaultJobImpl(string name, int maxDurationMinutes)
+            : base(name, maxDurationMinutes)
+        {
+            Timer = new Stopwatch();
+        }
+
+        protected Stopwatch Timer { get; private set; }
+
+        protected override void OnExecuteBegin()
+        {
+            Timer.Start();
+        }
+
+        protected override void OnExecuteEnd()
+        {
+            Timer.Stop();
+        }
+
+        protected override void ExecuteJob()
+        {
+        }
+
+        protected override JobResult GetResult()
+        {
+            return new JobResult
+            {
+                Successful = Timer.Elapsed.TotalMinutes < MaxDurationMinutes
+            };
         }
     }
 
@@ -46,8 +92,8 @@ namespace TaskRunner.Tasks
         JobResult Execute();
     }
 
-    public interface JobResult
+    public class JobResult
     {
-        bool Successful { get; }
+        public bool Successful { get; set; }
     }
 }
