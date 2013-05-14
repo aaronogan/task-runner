@@ -14,18 +14,6 @@ namespace TaskRunner.Tasks
 
     public class DefaultJobRunnerImpl : JobRunner<Job>
     {
-        public DefaultJobRunnerImpl()
-            : this(SynchronizationContext.Current)
-        {
-        }
-
-        public DefaultJobRunnerImpl(SynchronizationContext context)
-        {
-            Context = context;
-        }
-
-        protected SynchronizationContext Context { get; set; }
-
         protected virtual TaskScheduler Scheduler
         {
             get { return TaskScheduler.FromCurrentSynchronizationContext(); }

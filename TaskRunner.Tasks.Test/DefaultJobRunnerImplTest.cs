@@ -15,7 +15,7 @@ namespace TaskRunner.Tasks.Test
         {
             var context = new SynchronizationContext();
             SynchronizationContext.SetSynchronizationContext(context);
-            var runner = new DefaultJobRunnerImpl(context);
+            var runner = new DefaultJobRunnerImpl();
             var jobs = new List<Job>();
 
             var results = new List<JobResult>(runner.Execute(jobs));
@@ -28,7 +28,7 @@ namespace TaskRunner.Tasks.Test
         {
             var context = new SynchronizationContext();
             SynchronizationContext.SetSynchronizationContext(context);
-            var runner = new DefaultJobRunnerImpl(context);
+            var runner = new DefaultJobRunnerImpl();
             var jobs = GetJobs();
 
             var results = new List<JobResult>(runner.Execute(jobs));
