@@ -8,17 +8,12 @@ using System.Threading.Tasks;
 
 namespace TaskRunner.Tasks
 {
-    public class SequentialJobRunner : JobRunner
+    public interface Job
     {
-        protected List<Job> Jobs { get; set; }
+        string Name { get; set; }
+        int MaxDurationMinutes { get; set; }
 
-        public virtual void Execute()
-        {
-            foreach (var job in Jobs)
-            {
-                job.Execute();
-            }
-        }
+        JobResult Execute();
     }
 
     public abstract class JobBase : Job
@@ -77,19 +72,6 @@ namespace TaskRunner.Tasks
                 Successful = Timer.Elapsed.TotalMinutes < MaxDurationMinutes
             };
         }
-    }
-
-    public interface JobRunner
-    {
-        void Execute();
-    }
-
-    public interface Job
-    {
-        string Name { get; set; }
-        int MaxDurationMinutes { get; set; }
-
-        JobResult Execute();
     }
 
     public class JobResult

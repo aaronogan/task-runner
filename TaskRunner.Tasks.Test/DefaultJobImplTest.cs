@@ -8,26 +8,38 @@ namespace TaskRunner.Tasks.Test
     public class DefaultJobImplTest
     {
         [TestMethod]
+        public void Job_Less_Than_MaxDuration_Succeeds()
+        {
+            var job = new DefinedTimeJob("short", 1, new TimeSpan(0, 0, 0));
+
+            var result = job.Execute();
+
+            Assert.IsTrue(result.Successful);
+        }
+
+        [TestMethod]
         public void Job_Exceeding_MaxDuration_Fails()
         {
-            var job = new LongRunningJob();
+            var job = new DefinedTimeJob("long", 1, new TimeSpan(0, 1, 1));
 
             var result = job.Execute();
 
             Assert.IsFalse(result.Successful);
         }
 
-        public class LongRunningJob : DefaultJobImpl
+        public class DefinedTimeJob : DefaultJobImpl
         {
-            public LongRunningJob()
-                : base("long", 1)
-            {
+            private TimeSpan _executionTime;
 
+            public DefinedTimeJob(string name, int maxDurationMinutes, TimeSpan executionTime)
+                : base(name, maxDurationMinutes)
+            {
+                _executionTime = executionTime;
             }
-            
+
             protected override void ExecuteJob()
             {
-                Thread.Sleep(new TimeSpan(0, 1, 1));
+                Thread.Sleep(_executionTime);
             }
         }
     }
