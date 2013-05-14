@@ -32,7 +32,7 @@ namespace TaskRunner.Tasks.Test
             private TimeSpan _executionTime;
 
             public DefinedTimeJob(string name, int maxDurationMinutes, TimeSpan executionTime)
-                : base(name, maxDurationMinutes)
+                : base(0, name, maxDurationMinutes)
             {
                 _executionTime = executionTime;
             }

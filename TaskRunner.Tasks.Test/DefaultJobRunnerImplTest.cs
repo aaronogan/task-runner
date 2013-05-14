@@ -33,8 +33,8 @@ namespace TaskRunner.Tasks.Test
 
         protected IList<Job> GetJobs()
         {
-            var job1 = new DefaultJobImpl("job 1", 1);
-            var job2 = new DefaultJobImpl("job 2", 1);
+            var job1 = new DefaultJobImpl(1, "job 1", 1);
+            var job2 = new DefaultJobImpl(2, "job 2", 1);
             
             return new[] { job1, job2 };
         }
