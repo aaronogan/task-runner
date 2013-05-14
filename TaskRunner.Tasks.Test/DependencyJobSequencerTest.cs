@@ -6,26 +6,26 @@ using System.Collections.Generic;
 namespace TaskRunner.Tasks.Test
 {
     [TestClass]
-    public class DependencyJobSchedulerTest
+    public class DependencyJobSequencerTest
     {
         [TestMethod]
-        public void GetScheduledJobs_Returns_Proper_Number_Of_Jobs()
+        public void GetSequencedJobs_Returns_Proper_Number_Of_Jobs()
         {
             var jobs = GetJobs();
-            var scheduler = new DependencyJobScheduler(jobs);
+            var scheduler = new DependencyJobSequencer(jobs);
 
-            var scheduled = new List<Job>(scheduler.GetScheduledJobs());
+            var scheduled = new List<Job>(scheduler.GetSequencedJobs());
 
             Assert.AreEqual(jobs.Count, scheduled.Count);
         }
 
         [TestMethod]
-        public void GetScheduledJobs_Returns_Jobs_With_No_Dependencies_First()
+        public void GetSequencedJobs_Returns_Jobs_With_No_Dependencies_First()
         {
             var jobs = GetJobs();
-            var scheduler = new DependencyJobScheduler(jobs);
+            var scheduler = new DependencyJobSequencer(jobs);
 
-            var scheduled = new List<Job>(scheduler.GetScheduledJobs());
+            var scheduled = new List<Job>(scheduler.GetSequencedJobs());
 
             Assert.IsFalse(((DependencyJobImpl)scheduled[0]).DependencyId.HasValue);
         }
