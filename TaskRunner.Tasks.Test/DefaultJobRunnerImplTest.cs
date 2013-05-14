@@ -42,4 +42,11 @@ namespace TaskRunner.Tasks.Test
             return new[] { job1, job2 };
         }
     }
+
+    [TestClass]
+    public class DependencyJobRunnerImplTest
+    {
+        //[TestMethod]
+        //public void 
+    }
 }

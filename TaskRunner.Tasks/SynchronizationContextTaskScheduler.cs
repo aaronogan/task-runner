@@ -60,7 +60,13 @@ namespace TaskRunner.Tasks
     public class JobTaskScheduler : SynchronizationContextTaskScheduler
     {
         public JobTaskScheduler(ConcurrentQueue<Task> jobQueue)
-            : base(SynchronizationContext.Current)
+            : this(SynchronizationContext.Current, jobQueue)
+        {
+            Tasks = jobQueue;
+        }
+
+        public JobTaskScheduler(SynchronizationContext context, ConcurrentQueue<Task> jobQueue)
+            : base(context)
         {
             Tasks = jobQueue;
         }

@@ -10,9 +10,9 @@ namespace TaskRunner.Tasks.Test
         public void GetSequencedJobs_Returns_Proper_Number_Of_Jobs()
         {
             var jobs = GetJobs();
-            var scheduler = new DependencyJobSequencer(jobs);
+            var scheduler = new DependencyJobSequencer();
 
-            var scheduled = new List<Job>(scheduler.GetSequencedJobs());
+            var scheduled = new List<Job>(scheduler.GetSequencedJobs(jobs));
 
             Assert.AreEqual(jobs.Count, scheduled.Count);
         }
@@ -21,9 +21,9 @@ namespace TaskRunner.Tasks.Test
         public void GetSequencedJobs_Returns_Jobs_With_No_Dependencies_First()
         {
             var jobs = GetJobs();
-            var scheduler = new DependencyJobSequencer(jobs);
+            var scheduler = new DependencyJobSequencer();
 
-            var scheduled = new List<DependencyJobImpl>(scheduler.GetSequencedJobs());
+            var scheduled = new List<DependencyJobImpl>(scheduler.GetSequencedJobs(jobs));
 
             Assert.IsFalse(scheduled[0].DependencyId.HasValue);
             Assert.IsTrue(scheduled[1].DependencyId.HasValue);
