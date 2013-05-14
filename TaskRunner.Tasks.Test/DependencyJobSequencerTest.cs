@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TaskRunner.Tasks;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 
 namespace TaskRunner.Tasks.Test
@@ -25,9 +23,11 @@ namespace TaskRunner.Tasks.Test
             var jobs = GetJobs();
             var scheduler = new DependencyJobSequencer(jobs);
 
-            var scheduled = new List<Job>(scheduler.GetSequencedJobs());
+            var scheduled = new List<DependencyJobImpl>(scheduler.GetSequencedJobs());
 
-            Assert.IsFalse(((DependencyJobImpl)scheduled[0]).DependencyId.HasValue);
+            Assert.IsFalse(scheduled[0].DependencyId.HasValue);
+            Assert.IsTrue(scheduled[1].DependencyId.HasValue);
+            Assert.AreEqual(1, scheduled[1].DependencyId.Value);
         }
 
         protected IList<DependencyJobImpl> GetJobs()
