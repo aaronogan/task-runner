@@ -23,44 +23,18 @@ namespace TaskRunner.Tasks
 
         public IEnumerable<JobResult> Execute(IEnumerable<Job> jobs)
         {
-            OnExecuteBegin();
-
-            var results = new List<JobResult>();
             var jobTasks = new List<Task<JobResult>>();
+            
             foreach (var job in jobs)
             {
-                jobTasks.Add(
-                        Factory.StartNew(() => {
-                            var result = job.Execute();
-                            results.Add(result);
-                            return result;
-                        })
-                    );
+                jobTasks.Add(Factory.StartNew(() => {
+                    return job.Execute();
+                }));
             }
 
             Task.WaitAll(jobTasks.ToArray<Task<JobResult>>());
 
-            if (jobTasks.Count > 0)
-            {
-                var completedTasks = Factory.ContinueWhenAll(jobTasks.ToArray<Task>(), _ =>
-                    {
-                        OnExecuteEnd();
-                    });
-            }
-            else
-            {
-                OnExecuteEnd();
-            }
-
-            return results;
-        }
-
-        protected virtual void OnExecuteBegin()
-        {
-        }
-
-        protected virtual void OnExecuteEnd()
-        {
+            return jobTasks.Select(x => x.Result);
         }
     }
 }
