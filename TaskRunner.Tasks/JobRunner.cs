@@ -26,18 +26,9 @@ namespace TaskRunner.Tasks
 
         protected SynchronizationContext Context { get; set; }
 
-        private TaskScheduler _taskScheduler = null;
         protected virtual TaskScheduler Scheduler
         {
-            get
-            {
-                if (_taskScheduler == null)
-                {
-                    _taskScheduler = new SynchronizationContextTaskScheduler(Context);
-                }
-
-                return _taskScheduler;
-            }
+            get { return TaskScheduler.FromCurrentSynchronizationContext(); }
         }
 
         private TaskFactory _factory = null;
@@ -108,20 +99,6 @@ namespace TaskRunner.Tasks
         public DependencyJobRunnerImpl(ConcurrentQueue<Task> taskQueue)
         {
             _taskQueue = taskQueue;
-        }
-
-        private TaskScheduler _taskScheduler = null;
-        protected override TaskScheduler Scheduler
-        {
-            get
-            {
-                if (_taskScheduler == null)
-                {
-                    _taskScheduler = new JobTaskScheduler(_taskQueue);
-                }
-
-                return _taskScheduler;
-            }
         }
     }
 }

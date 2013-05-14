@@ -14,6 +14,7 @@ namespace TaskRunner.Tasks.Test
         public void Execute_Returns_Proper_Number_Of_Results_For_No_Jobs()
         {
             var context = new SynchronizationContext();
+            SynchronizationContext.SetSynchronizationContext(context);
             var runner = new DefaultJobRunnerImpl(context);
             var jobs = new List<Job>();
 
@@ -26,6 +27,7 @@ namespace TaskRunner.Tasks.Test
         public void Execute_Return_Proper_Number_Of_Results_For_Two_Jobs()
         {
             var context = new SynchronizationContext();
+            SynchronizationContext.SetSynchronizationContext(context);
             var runner = new DefaultJobRunnerImpl(context);
             var jobs = GetJobs();
 
@@ -46,7 +48,5 @@ namespace TaskRunner.Tasks.Test
     [TestClass]
     public class DependencyJobRunnerImplTest
     {
-        //[TestMethod]
-        //public void 
     }
 }
