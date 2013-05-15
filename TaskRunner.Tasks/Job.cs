@@ -10,6 +10,7 @@ namespace TaskRunner.Tasks
 {
     public interface Job
     {
+        int Id { get; set; }
         string Name { get; set; }
         int MaxDurationMinutes { get; set; }
 

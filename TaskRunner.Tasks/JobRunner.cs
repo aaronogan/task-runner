@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace TaskRunner.Tasks
 {
@@ -12,47 +8,9 @@ namespace TaskRunner.Tasks
         IEnumerable<JobResult> Execute(IEnumerable<T> jobs);
     }
 
-    public class DefaultJobRunnerImpl : JobRunner<Job>
-    {
-        protected virtual TaskScheduler Scheduler
-        {
-            get { return TaskScheduler.FromCurrentSynchronizationContext(); }
-        }
-
-        private TaskFactory _factory = null;
-        protected virtual TaskFactory Factory
-        {
-            get
-            {
-                if (_factory == null)
-                {
-                    _factory = new TaskFactory(Scheduler);
-                }
-                return _factory;
-            }
-        }
-
-        public virtual IEnumerable<JobResult> Execute(IEnumerable<Job> jobs)
-        {
-            var jobTasks = new List<Task<JobResult>>();
-            
-            foreach (var job in jobs)
-            {
-                jobTasks.Add(Factory.StartNew(() => {
-                    return job.Execute();
-                }));
-            }
-
-            Task.WaitAll(jobTasks.ToArray<Task<JobResult>>());
-
-            return jobTasks.Select(x => x.Result);
-        }
-    }
-
-    public class DependencyJobRunnerImpl<T> : DefaultJobRunnerImpl where T : DependencyJobImpl
+    public class DependencyJobRunnerImpl<T> : JobRunner<T> where T : DependencyJobImpl
     {
         private JobSequencer<T> _jobSequencer;
-        private ConcurrentQueue<Task> _taskQueue;
 
         public DependencyJobRunnerImpl(JobSequencer<T> sequencer)
         {
@@ -62,31 +20,19 @@ namespace TaskRunner.Tasks
         public IEnumerable<JobResult> Execute(IEnumerable<T> jobs)
         {
             var queue = _jobSequencer.GetSequencedJobs(jobs);
-            var jobTasks = new List<Task<JobResult>>();
+            var results = new List<JobResult>();
 
             while (queue.Any())
             {
-                jobTasks.Add(Factory.StartNew(() => {
-                    T next = null;
-                    if (queue.TryDequeue(out next))
-                    {
-                        return next.Execute();
-                    }
-                    else
-                    {
-                        throw new NotImplementedException();
-                    }
-                }));
+                var previous = results.Any() ? results.Last() : null;
+                bool continueProcessing = previous == null || previous.Successful;
+
+                var jobToProcess = queue.Dequeue();
+                var result = jobToProcess.Execute();
+                results.Add(result);
             }
 
-            Task.WaitAll(jobTasks.ToArray<Task<JobResult>>());
-            
-            return jobTasks.Select(x => x.Result);
-        }
-
-        public DependencyJobRunnerImpl(ConcurrentQueue<Task> taskQueue)
-        {
-            _taskQueue = taskQueue;
+            return results;
         }
     }
 }

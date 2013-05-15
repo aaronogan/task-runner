@@ -1,22 +1,16 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TaskRunner.Tasks;
-using System.Collections;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace TaskRunner.Tasks.Test
 {
     [TestClass]
-    public class DefaultJobRunnerImplTest
+    public class DependencyJobRunnerImplTest
     {
         [TestMethod]
         public void Execute_Returns_Proper_Number_Of_Results_For_No_Jobs()
         {
-            var context = new SynchronizationContext();
-            SynchronizationContext.SetSynchronizationContext(context);
-            var runner = new DefaultJobRunnerImpl();
-            var jobs = new List<Job>();
+            var runner = GetJobRunner();
+            var jobs = new List<DependencyJobImpl>();
 
             var results = new List<JobResult>(runner.Execute(jobs));
 
@@ -26,9 +20,7 @@ namespace TaskRunner.Tasks.Test
         [TestMethod]
         public void Execute_Return_Proper_Number_Of_Results_For_Two_Jobs()
         {
-            var context = new SynchronizationContext();
-            SynchronizationContext.SetSynchronizationContext(context);
-            var runner = new DefaultJobRunnerImpl();
+            var runner = GetJobRunner();
             var jobs = GetJobs();
 
             var results = new List<JobResult>(runner.Execute(jobs));
@@ -36,17 +28,18 @@ namespace TaskRunner.Tasks.Test
             Assert.AreEqual(jobs.Count, results.Count);
         }
 
-        protected IList<Job> GetJobs()
+        protected DependencyJobRunnerImpl<DependencyJobImpl> GetJobRunner()
         {
-            var job1 = new DefaultJobImpl(1, "job 1", 1);
-            var job2 = new DefaultJobImpl(2, "job 2", 1);
-            
+            var sequencer = new DependencyJobSequencer();
+            return new DependencyJobRunnerImpl<DependencyJobImpl>(sequencer);
+        }
+
+        protected IList<DependencyJobImpl> GetJobs()
+        {
+            var job1 = new DependencyJobImpl(1, "job 1", 1);
+            var job2 = new DependencyJobImpl(2, "job 2", 1, 1);
+
             return new[] { job1, job2 };
         }
-    }
-
-    [TestClass]
-    public class DependencyJobRunnerImplTest
-    {
     }
 }
