@@ -49,7 +49,8 @@ namespace TaskRunner.Tasks.Test
                     new JobRepositoryStub.JobHistory
                     {
                         JobId = 1,
-                        ActivityTime = DateTime.Now.AddMinutes(-1)
+                        ActivityTime = DateTime.Now.AddMinutes(-1),
+                        Successful = true
                     }
                 };
 
@@ -85,7 +86,8 @@ namespace TaskRunner.Tasks.Test
                     new JobRepositoryStub.JobHistory
                     {
                         JobId = 1,
-                        ActivityTime = DateTime.Now.AddMinutes(-1)
+                        ActivityTime = DateTime.Now.AddMinutes(-1),
+                        Successful = true
                     }
                 };
 
@@ -94,6 +96,33 @@ namespace TaskRunner.Tasks.Test
             var result = repository.GetNextJobToRun();
 
             Assert.IsFalse(result.HasDependency());
+            Assert.AreEqual(2, result.Id);
+        }
+
+        [TestMethod]
+        public void GetNextJobToRun_Returns_First_Failed_Job()
+        {
+            var repository = new JobRepositoryStub();
+
+            repository.JobHistoryTable.Add(
+                new JobRepositoryStub.JobHistory
+                {
+                    JobId = 1,
+                    ActivityTime = DateTime.Now.AddMinutes(-2),
+                    Successful = true,
+                    Error = string.Empty
+                });
+            repository.JobHistoryTable.Add(
+                new JobRepositoryStub.JobHistory
+                {
+                    JobId = 2,
+                    ActivityTime = DateTime.Now.AddMinutes(-1),
+                    Successful = false,
+                    Error = "Error"
+                });
+
+            var result = repository.GetNextJobToRun();
+
             Assert.AreEqual(2, result.Id);
         }
     }

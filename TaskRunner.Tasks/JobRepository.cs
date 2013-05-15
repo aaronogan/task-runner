@@ -50,16 +50,14 @@ namespace TaskRunner.Tasks
         protected bool DependencyHasRunSuccessfullyToday(int jobId)
         {
             var dependencyId = JobTable.Single(x => x.Id == jobId).DependencyId;
-            var jobHistory = JobHistoryTable.Where(x => x.JobId == dependencyId
-                && x.ActivityTime.Date == DateTime.Today);
-
-            return jobHistory.Any();
+            return dependencyId.HasValue && HasRunSuccessfullyToday(dependencyId.Value);
         }
 
         protected bool HasRunSuccessfullyToday(int jobId)
         {
             var jobHistory = JobHistoryTable.Where(x => x.JobId == jobId
-                && x.ActivityTime.Date == DateTime.Today);
+                && x.ActivityTime.Date == DateTime.Today
+                && x.Successful);
 
             return jobHistory.Any();
         }
