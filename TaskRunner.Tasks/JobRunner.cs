@@ -29,12 +29,19 @@ namespace TaskRunner.Tasks
 
             while (queue.Any())
             {
-                var previous = results.Any() ? results.Last() : null;
-                bool continueProcessing = previous == null || previous.Successful;
-
                 var jobToProcess = queue.Dequeue();
-                var result = jobToProcess.Execute();
-                results.Add(result);
+
+                var parentJob = jobToProcess.HasDependency() ?
+                    results.SingleOrDefault(x => x.JobId == jobToProcess.DependencyId.Value) :
+                    null;
+
+                bool processJob = parentJob == null || parentJob.Successful;
+
+                if (processJob)
+                {
+                    var result = jobToProcess.Execute();
+                    results.Add(result);
+                }
             }
 
             return results;

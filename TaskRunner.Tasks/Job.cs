@@ -86,4 +86,12 @@ namespace TaskRunner.Tasks
         public int JobId { get; set; }
         public bool Successful { get; set; }
     }
+
+    public static class JobHelpers
+    {
+        public static bool HasDependency(this Job job)
+        {
+            return job.DependencyId.HasValue;
+        }
+    }
 }
