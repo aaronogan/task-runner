@@ -8,7 +8,6 @@ namespace TaskRunner.Tasks
     public interface JobRepository
     {
         Job GetNextJobToRun();
-        void SaveJobHistory(JobResult history);
     }
 
     public class JobRepositoryStub : JobRepository
@@ -17,19 +16,52 @@ namespace TaskRunner.Tasks
         public IList<JobHistory> JobHistoryTable { get; set; }
 
         public JobRepositoryStub()
+            : this(JobRecord.DefaultRecords, JobHistory.DefaultRecords)
         {
-            JobTable = JobRecord.DefaultRecords;
-            JobHistoryTable = JobHistory.DefaultRecords;
+        }
+
+        public JobRepositoryStub(IList<JobRecord> jobTable, IList<JobHistory> jobHistoryTable)
+        {
+            JobTable = jobTable;
+            JobHistoryTable = jobHistoryTable;
         }
 
         public Job GetNextJobToRun()
         {
-            throw new NotImplementedException();
+            var orderedJobs = JobTable.OrderBy(x => x.Id).OrderBy(x => x.DependencyId);
+
+            foreach (var job in orderedJobs)
+            {
+                if (HasRunSuccessfullyToday(job.Id))
+                {
+                    continue;
+                }
+
+                if (!job.DependencyId.HasValue
+                    || DependencyHasRunSuccessfullyToday(job.Id))
+                {
+                    return JobRecord.ConvertToJob(job);
+                }
+            }
+
+            return null;
         }
 
-        public void SaveJobHistory(JobResult history)
+        protected bool DependencyHasRunSuccessfullyToday(int jobId)
         {
-            throw new NotImplementedException();
+            var dependencyId = JobTable.Single(x => x.Id == jobId).DependencyId;
+            var jobHistory = JobHistoryTable.Where(x => x.JobId == dependencyId
+                && x.ActivityTime.Date == DateTime.Today);
+
+            return jobHistory.Any();
+        }
+
+        protected bool HasRunSuccessfullyToday(int jobId)
+        {
+            var jobHistory = JobHistoryTable.Where(x => x.JobId == jobId
+                && x.ActivityTime.Date == DateTime.Today);
+
+            return jobHistory.Any();
         }
 
         public class JobRecord
@@ -69,12 +101,19 @@ namespace TaskRunner.Tasks
                     MaxDurationMinutes = 30
                 }
             };
+
+            public static Job ConvertToJob(JobRecord record)
+            {
+                if (record == null) return null;
+                return new DefaultJobImpl(record.Id, record.Name, record.MaxDurationMinutes, record.DependencyId);
+            }
         }
 
         public class JobHistory
         {
             public int JobId { get; set; }
             public DateTime ActivityTime { get; set; }
+            public bool Successful { get; set; }
             public string Error { get; set; }
 
             public static IList<JobHistory> DefaultRecords = new List<JobHistory>();
