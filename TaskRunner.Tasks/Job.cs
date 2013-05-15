@@ -11,6 +11,7 @@ namespace TaskRunner.Tasks
     public interface Job
     {
         int Id { get; set; }
+        int? DependencyId { get; set; }
         string Name { get; set; }
         int MaxDurationMinutes { get; set; }
 
@@ -19,14 +20,16 @@ namespace TaskRunner.Tasks
 
     public abstract class JobBase : Job
     {
-        public JobBase(int id, string name, int maxDurationMinutes)
+        public JobBase(int id, string name, int maxDurationMinutes, int? dependencyId = null)
         {
             Id = id;
+            DependencyId = dependencyId;
             Name = name;
             MaxDurationMinutes = maxDurationMinutes;
         }
 
         public int Id { get; set; }
+        public int? DependencyId { get; set; }
         public string Name { get; set; }
         public int MaxDurationMinutes { get; set; }
 
@@ -46,8 +49,8 @@ namespace TaskRunner.Tasks
 
     public class DefaultJobImpl : JobBase
     {
-        public DefaultJobImpl(int id, string name, int maxDurationMinutes)
-            : base(id, name, maxDurationMinutes)
+        public DefaultJobImpl(int id, string name, int maxDurationMinutes, int? dependencyId = null)
+            : base(id, name, maxDurationMinutes, dependencyId)
         {
             Timer = new Stopwatch();
         }
@@ -72,24 +75,15 @@ namespace TaskRunner.Tasks
         {
             return new JobResult
             {
+                JobId = Id,
                 Successful = Timer.Elapsed.TotalMinutes < MaxDurationMinutes
             };
         }
     }
 
-    public class DependencyJobImpl : DefaultJobImpl
-    {
-        public DependencyJobImpl(int id, string name, int maxDurationMinutes, int? dependencyId = null)
-            : base(id, name, maxDurationMinutes)
-        {
-            DependencyId = dependencyId;
-        }
-
-        public int? DependencyId { get; protected set; }
-    }
-
     public class JobResult
     {
+        public int JobId { get; set; }
         public bool Successful { get; set; }
     }
 }

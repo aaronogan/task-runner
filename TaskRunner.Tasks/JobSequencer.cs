@@ -8,12 +8,12 @@ namespace TaskRunner.Tasks
         Queue<T> GetSequencedJobs(IEnumerable<T> jobs);
     }
 
-    public class DependencyJobSequencer : JobSequencer<DependencyJobImpl>
+    public class DependencyJobSequencer<T> : JobSequencer<T> where T : Job
     {
-        public Queue<DependencyJobImpl> GetSequencedJobs(IEnumerable<DependencyJobImpl> jobs)
+        public Queue<T> GetSequencedJobs(IEnumerable<T> jobs)
         {
-            var sorted = new List<DependencyJobImpl>(jobs).OrderBy(x => x.DependencyId);
-            return new Queue<DependencyJobImpl>(sorted);
+            var sorted = new List<T>(jobs).OrderBy(x => x.DependencyId);
+            return new Queue<T>(sorted);
         }
     }
 }

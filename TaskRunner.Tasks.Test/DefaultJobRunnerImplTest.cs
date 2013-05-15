@@ -9,8 +9,8 @@ namespace TaskRunner.Tasks.Test
         [TestMethod]
         public void Execute_Returns_Proper_Number_Of_Results_For_No_Jobs()
         {
-            var runner = GetJobRunner();
-            var jobs = new List<DependencyJobImpl>();
+            var runner = new DependencyJobRunnerImpl<Job>();
+            var jobs = new List<DefaultJobImpl>();
 
             var results = new List<JobResult>(runner.Execute(jobs));
 
@@ -18,9 +18,9 @@ namespace TaskRunner.Tasks.Test
         }
 
         [TestMethod]
-        public void Execute_Return_Proper_Number_Of_Results_For_Two_Jobs()
+        public void Execute_Returns_Proper_Number_Of_Results_For_Two_Jobs()
         {
-            var runner = GetJobRunner();
+            var runner = new DependencyJobRunnerImpl<Job>();
             var jobs = GetJobs();
 
             var results = new List<JobResult>(runner.Execute(jobs));
@@ -28,18 +28,12 @@ namespace TaskRunner.Tasks.Test
             Assert.AreEqual(jobs.Count, results.Count);
         }
 
-        protected DependencyJobRunnerImpl<DependencyJobImpl> GetJobRunner()
+        protected IList<DefaultJobImpl> GetJobs()
         {
-            var sequencer = new DependencyJobSequencer();
-            return new DependencyJobRunnerImpl<DependencyJobImpl>(sequencer);
-        }
+            var job1 = new DefaultJobImpl(1, "job 1", 1);
+            var job2 = new DefaultJobImpl(2, "job 2", 1, 1);
 
-        protected IList<DependencyJobImpl> GetJobs()
-        {
-            var job1 = new DependencyJobImpl(1, "job 1", 1);
-            var job2 = new DependencyJobImpl(2, "job 2", 1, 1);
-
-            return new[] { job1, job2 };
+            return new[] { job2, job1 };
         }
     }
 }

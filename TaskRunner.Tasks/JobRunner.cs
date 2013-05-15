@@ -8,9 +8,14 @@ namespace TaskRunner.Tasks
         IEnumerable<JobResult> Execute(IEnumerable<T> jobs);
     }
 
-    public class DependencyJobRunnerImpl<T> : JobRunner<T> where T : DependencyJobImpl
+    public class DependencyJobRunnerImpl<T> : JobRunner<T> where T : Job
     {
         private JobSequencer<T> _jobSequencer;
+
+        public DependencyJobRunnerImpl()
+            : this(new DependencyJobSequencer<T>())
+        {
+        }
 
         public DependencyJobRunnerImpl(JobSequencer<T> sequencer)
         {
