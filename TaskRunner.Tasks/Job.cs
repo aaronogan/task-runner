@@ -15,7 +15,7 @@ namespace TaskRunner.Tasks
         string Name { get; set; }
         int MaxDurationMinutes { get; set; }
 
-        JobResult Execute();
+        JobHistory Execute();
     }
 
     public abstract class JobBase : Job
@@ -36,9 +36,9 @@ namespace TaskRunner.Tasks
         protected abstract void OnExecuteBegin();
         protected abstract void OnExecuteEnd();
         protected abstract void ExecuteJob();
-        protected abstract JobResult GetResult();
+        protected abstract JobHistory GetResult();
 
-        public JobResult Execute()
+        public JobHistory Execute()
         {
             OnExecuteBegin();
             ExecuteJob();
@@ -71,9 +71,9 @@ namespace TaskRunner.Tasks
         {
         }
 
-        protected override JobResult GetResult()
+        protected override JobHistory GetResult()
         {
-            return new JobResult
+            return new JobHistory
             {
                 JobId = Id,
                 Successful = Timer.Elapsed.TotalMinutes < MaxDurationMinutes
@@ -81,10 +81,12 @@ namespace TaskRunner.Tasks
         }
     }
 
-    public class JobResult
+    public class JobHistory
     {
         public int JobId { get; set; }
+        public DateTime ActivityTime { get; set; }
         public bool Successful { get; set; }
+        public string Error { get; set; }
     }
 
     public static class JobHelpers

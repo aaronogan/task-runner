@@ -6,32 +6,30 @@ namespace TaskRunner.Tasks
 {
     public interface JobRunner<T> where T : Job
     {
-        JobResult RunNextJob();
-        [Obsolete]
-        IEnumerable<JobResult> Execute(IEnumerable<T> jobs);
+        JobHistory RunNextJob();
     }
 
     public class DefaultJobRunnerImpl<T> : JobRunner<T> where T : Job
     {
         protected JobRepository Repository { get; set; }
-        private JobSequencer<T> _jobSequencer;
+        protected JobSequencer<T> JobSequencer { get; set; }
 
         public DefaultJobRunnerImpl(JobRepository repository, JobSequencer<T> sequencer)
         {
             Repository = repository;
-            _jobSequencer = sequencer;
+            JobSequencer = sequencer;
         }
 
-        public JobResult RunNextJob()
+        public JobHistory RunNextJob()
         {
             throw new NotImplementedException();
         }
 
         [Obsolete]
-        public IEnumerable<JobResult> Execute(IEnumerable<T> jobs)
+        public IEnumerable<JobHistory> Execute(IEnumerable<T> jobs)
         {
-            var queue = _jobSequencer.GetSequencedJobs(jobs);
-            var results = new List<JobResult>();
+            var queue = JobSequencer.GetSequencedJobs(jobs);
+            var results = new List<JobHistory>();
 
             while (queue.Any())
             {

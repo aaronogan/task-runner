@@ -12,7 +12,7 @@ namespace TaskRunner.Tasks.Test
         {
             var repository = new JobRepositoryStub();
             repository.JobTable = new List<JobRepositoryStub.JobRecord>();
-            repository.JobHistoryTable = new List<JobRepositoryStub.JobHistory>();
+            repository.JobHistoryTable = new List<JobRepositoryStub.JobHistoryRecord>();
 
             var result = repository.GetNextJobToRun();
 
@@ -45,7 +45,7 @@ namespace TaskRunner.Tasks.Test
                 };
             repository.JobHistoryTable = new[]
                 {
-                    new JobRepositoryStub.JobHistory
+                    new JobRepositoryStub.JobHistoryRecord
                     {
                         JobId = 1,
                         ActivityTime = DateTime.Now.AddMinutes(-1),
@@ -80,7 +80,7 @@ namespace TaskRunner.Tasks.Test
                 };
             repository.JobHistoryTable = new[]
                 {
-                    new JobRepositoryStub.JobHistory
+                    new JobRepositoryStub.JobHistoryRecord
                     {
                         JobId = 1,
                         ActivityTime = DateTime.Now.AddMinutes(-1),
@@ -100,7 +100,7 @@ namespace TaskRunner.Tasks.Test
             var repository = new JobRepositoryStub();
 
             repository.JobHistoryTable.Add(
-                new JobRepositoryStub.JobHistory
+                new JobRepositoryStub.JobHistoryRecord
                 {
                     JobId = 1,
                     ActivityTime = DateTime.Now.AddMinutes(-2),
@@ -108,7 +108,7 @@ namespace TaskRunner.Tasks.Test
                     Error = string.Empty
                 });
             repository.JobHistoryTable.Add(
-                new JobRepositoryStub.JobHistory
+                new JobRepositoryStub.JobHistoryRecord
                 {
                     JobId = 2,
                     ActivityTime = DateTime.Now.AddMinutes(-1),
@@ -127,7 +127,7 @@ namespace TaskRunner.Tasks.Test
             var repository = new JobRepositoryStub();
 
             repository.JobHistoryTable.Add(
-                new JobRepositoryStub.JobHistory
+                new JobRepositoryStub.JobHistoryRecord
                 {
                     JobId = 1,
                     ActivityTime = DateTime.Now.AddMinutes(-3),
@@ -136,7 +136,7 @@ namespace TaskRunner.Tasks.Test
                 });
 
             repository.JobHistoryTable.Add(
-                new JobRepositoryStub.JobHistory
+                new JobRepositoryStub.JobHistoryRecord
                 {
                     JobId = 2,
                     ActivityTime = DateTime.Now.AddMinutes(-2),
@@ -145,7 +145,7 @@ namespace TaskRunner.Tasks.Test
                 });
 
             repository.JobHistoryTable.Add(
-                new JobRepositoryStub.JobHistory
+                new JobRepositoryStub.JobHistoryRecord
                 {
                     JobId = 3,
                     ActivityTime = DateTime.Now.AddMinutes(-1),

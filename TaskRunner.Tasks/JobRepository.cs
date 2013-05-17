@@ -7,54 +7,71 @@ namespace TaskRunner.Tasks
 {
     public interface JobRepository
     {
-        Job GetNextJobToRun();
+        IEnumerable<Job> GetAllJobs();
+        IEnumerable<JobHistory> GetAllHistory();
+        
+        //[Obsolete]
+        //Job GetNextJobToRun();
     }
 
     public class JobRepositoryStub : JobRepository
     {
         public IList<JobRecord> JobTable { get; set; }
-        public IList<JobHistory> JobHistoryTable { get; set; }
-        protected JobSequencer<Job> Sequencer { get; set; }
+        public IList<JobHistoryRecord> JobHistoryTable { get; set; }
+        //protected JobSequencer<Job> Sequencer { get; set; }
 
         public JobRepositoryStub()
-            : this(new DefaultJobSequencer<Job>(), JobRecord.DefaultRecords, JobHistory.DefaultRecords)
+            : this(new DefaultJobSequencer<Job>(), JobRecord.DefaultRecords, JobHistoryRecord.DefaultRecords)
         {
         }
 
-        public JobRepositoryStub(JobSequencer<Job> jobSequencer, IList<JobRecord> jobTable, IList<JobHistory> jobHistoryTable)
+        public JobRepositoryStub(JobSequencer<Job> jobSequencer, IList<JobRecord> jobTable, IList<JobHistoryRecord> jobHistoryTable)
         {
-            Sequencer = jobSequencer;
+            //Sequencer = jobSequencer;
             JobTable = jobTable;
             JobHistoryTable = jobHistoryTable;
         }
 
+        public IEnumerable<Job> GetAllJobs()
+        {
+            return JobTable.Select(x => JobRecord.ConvertToJob(x));
+        }
+
+        public IEnumerable<JobHistory> GetAllHistory()
+        {
+            return JobHistoryTable.Select(x => JobHistoryRecord.ConvertToHistory(x));
+        }
+
+        [Obsolete("This needs to be moved into the JobRunner implementation.")]
         public Job GetNextJobToRun()
         {
-            var allJobs = JobTable.Select(x => JobRecord.ConvertToJob(x));
-            var sequenced = Sequencer.GetSequencedJobs(allJobs);
+            throw new NotImplementedException();
 
-            while (sequenced.Any())
-            {
-                var job = sequenced.Dequeue();
+            //var allJobs = JobTable.Select(x => JobRecord.ConvertToJob(x));
+            //var sequenced = Sequencer.GetSequencedJobs(allJobs);
 
-                if (HasRunSuccessfullyToday(job.Id))
-                {
-                    continue;
-                }
+            //while (sequenced.Any())
+            //{
+            //    var job = sequenced.Dequeue();
 
-                if (!job.HasDependency())
-                {
-                    return job;
-                }
+            //    if (HasRunSuccessfullyToday(job.Id))
+            //    {
+            //        continue;
+            //    }
 
-                if (job.HasDependency()
-                    && DependencyHasRunSuccessfullyToday(job.Id))
-                {
-                    return job;
-                }
-            }
+            //    if (!job.HasDependency())
+            //    {
+            //        return job;
+            //    }
 
-            return null;
+            //    if (job.HasDependency()
+            //        && DependencyHasRunSuccessfullyToday(job.Id))
+            //    {
+            //        return job;
+            //    }
+            //}
+
+            //return null;
         }
 
         protected bool DependencyHasRunSuccessfullyToday(int jobId)
@@ -125,14 +142,26 @@ namespace TaskRunner.Tasks
             }
         }
 
-        public class JobHistory
+        public class JobHistoryRecord
         {
             public int JobId { get; set; }
             public DateTime ActivityTime { get; set; }
             public bool Successful { get; set; }
             public string Error { get; set; }
 
-            public static IList<JobHistory> DefaultRecords = new List<JobHistory>();
+            public static IList<JobHistoryRecord> DefaultRecords = new List<JobHistoryRecord>();
+
+            public static JobHistory ConvertToHistory(JobHistoryRecord record)
+            {
+                if (record == null) return null;
+                return new JobHistory
+                {
+                    JobId = record.JobId,
+                    ActivityTime = record.ActivityTime,
+                    Successful = record.Successful,
+                    Error = record.Error
+                };
+            }
         }
     }
 }

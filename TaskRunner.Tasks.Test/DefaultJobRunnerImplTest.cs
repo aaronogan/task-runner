@@ -12,7 +12,7 @@ namespace TaskRunner.Tasks.Test
             var runner = GetJobRunner();
             var jobs = new List<DefaultJobImpl>();
 
-            var results = new List<JobResult>(runner.Execute(jobs));
+            var results = new List<JobHistory>(runner.Execute(jobs));
 
             Assert.AreEqual(0, results.Count);
         }
@@ -23,7 +23,7 @@ namespace TaskRunner.Tasks.Test
             var runner = GetJobRunner();
             var jobs = GetJobs();
 
-            var results = new List<JobResult>(runner.Execute(jobs));
+            var results = new List<JobHistory>(runner.Execute(jobs));
 
             Assert.AreEqual(jobs.Count, results.Count);
         }
@@ -34,7 +34,7 @@ namespace TaskRunner.Tasks.Test
             var runner = GetJobRunner();
             var jobs = GetJobsWithFailure();
 
-            var results = new List<JobResult>(runner.Execute(jobs));
+            var results = new List<JobHistory>(runner.Execute(jobs));
 
             Assert.AreEqual(3, results.Count);
             Assert.IsTrue(results[0].Successful);
@@ -51,7 +51,7 @@ namespace TaskRunner.Tasks.Test
                 new DefaultJobImpl(2, "job 2", 1, 1)
             };
 
-            var results = new List<JobResult>(runner.Execute(jobs));
+            var results = new List<JobHistory>(runner.Execute(jobs));
 
             Assert.AreEqual(1, results.Count);
         }
@@ -88,7 +88,7 @@ namespace TaskRunner.Tasks.Test
             {
             }
 
-            protected override JobResult GetResult()
+            protected override JobHistory GetResult()
             {
                 var result = base.GetResult();
                 result.Successful = false;
