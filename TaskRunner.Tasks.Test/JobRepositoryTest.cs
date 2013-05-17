@@ -10,10 +10,9 @@ namespace TaskRunner.Tasks.Test
         [TestMethod]
         public void GetNextJobToRun_Returns_Null_When_No_Jobs_To_Run()
         {
-            var jobs = new List<JobRepositoryStub.JobRecord>();
-            var jobHistory = new List<JobRepositoryStub.JobHistory>();
-
-            var repository = new JobRepositoryStub(jobs, jobHistory);
+            var repository = new JobRepositoryStub();
+            repository.JobTable = new List<JobRepositoryStub.JobRecord>();
+            repository.JobHistoryTable = new List<JobRepositoryStub.JobHistory>();
 
             var result = repository.GetNextJobToRun();
 
@@ -33,7 +32,8 @@ namespace TaskRunner.Tasks.Test
         [TestMethod]
         public void GetNextJobToRun_Returns_Null_If_All_Jobs_Have_Run_Today()
         {
-            var jobs = new[]
+            var repository = new JobRepositoryStub();
+            repository.JobTable = new[]
                 {
                     new JobRepositoryStub.JobRecord
                     {
@@ -43,8 +43,7 @@ namespace TaskRunner.Tasks.Test
 
                     }
                 };
-
-            var jobHistory = new[]
+            repository.JobHistoryTable = new[]
                 {
                     new JobRepositoryStub.JobHistory
                     {
@@ -54,8 +53,6 @@ namespace TaskRunner.Tasks.Test
                     }
                 };
 
-            var repository = new JobRepositoryStub(jobs, jobHistory);
-
             var result = repository.GetNextJobToRun();
 
             Assert.IsNull(result);
@@ -64,7 +61,8 @@ namespace TaskRunner.Tasks.Test
         [TestMethod]
         public void GetNextJobToRun_Returns_First_Job_With_No_Dependency_If_History_Found_For_First()
         {
-            var jobs = new[]
+            var repository = new JobRepositoryStub();
+            repository.JobTable = new[]
                 {
                     new JobRepositoryStub.JobRecord
                     {
@@ -80,8 +78,7 @@ namespace TaskRunner.Tasks.Test
                         MaxDurationMinutes = 1,
                     }
                 };
-
-            var jobHistory = new[]
+            repository.JobHistoryTable = new[]
                 {
                     new JobRepositoryStub.JobHistory
                     {
@@ -90,8 +87,6 @@ namespace TaskRunner.Tasks.Test
                         Successful = true
                     }
                 };
-
-            var repository = new JobRepositoryStub(jobs, jobHistory);
 
             var result = repository.GetNextJobToRun();
 
@@ -161,6 +156,11 @@ namespace TaskRunner.Tasks.Test
             var result = repository.GetNextJobToRun();
 
             Assert.AreEqual(4, result.Id);
+        }
+
+        protected JobRepositoryStub GetRepository()
+        {
+            return new JobRepositoryStub();
         }
     }
 }

@@ -14,14 +14,16 @@ namespace TaskRunner.Tasks
     {
         public IList<JobRecord> JobTable { get; set; }
         public IList<JobHistory> JobHistoryTable { get; set; }
+        protected JobSequencer<Job> Sequencer { get; set; }
 
         public JobRepositoryStub()
-            : this(JobRecord.DefaultRecords, JobHistory.DefaultRecords)
+            : this(new DependencyJobSequencer<Job>(), JobRecord.DefaultRecords, JobHistory.DefaultRecords)
         {
         }
 
-        public JobRepositoryStub(IList<JobRecord> jobTable, IList<JobHistory> jobHistoryTable)
+        public JobRepositoryStub(JobSequencer<Job> jobSequencer, IList<JobRecord> jobTable, IList<JobHistory> jobHistoryTable)
         {
+            Sequencer = jobSequencer;
             JobTable = jobTable;
             JobHistoryTable = jobHistoryTable;
         }
