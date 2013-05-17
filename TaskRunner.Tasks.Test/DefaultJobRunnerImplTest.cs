@@ -9,7 +9,7 @@ namespace TaskRunner.Tasks.Test
         [TestMethod]
         public void Execute_Returns_Proper_Number_Of_Results_For_No_Jobs()
         {
-            var runner = new DefaultJobRunnerImpl<Job>();
+            var runner = GetJobRunner();
             var jobs = new List<DefaultJobImpl>();
 
             var results = new List<JobResult>(runner.Execute(jobs));
@@ -20,7 +20,7 @@ namespace TaskRunner.Tasks.Test
         [TestMethod]
         public void Execute_Returns_Proper_Number_Of_Results_For_Two_Jobs()
         {
-            var runner = new DefaultJobRunnerImpl<Job>();
+            var runner = GetJobRunner();
             var jobs = GetJobs();
 
             var results = new List<JobResult>(runner.Execute(jobs));
@@ -31,7 +31,7 @@ namespace TaskRunner.Tasks.Test
         [TestMethod]
         public void Execute_Runs_Peer_Job_Even_If_Antecedent_Fails()
         {
-            var runner = new DefaultJobRunnerImpl<Job>();
+            var runner = GetJobRunner();
             var jobs = GetJobsWithFailure();
 
             var results = new List<JobResult>(runner.Execute(jobs));
@@ -45,7 +45,7 @@ namespace TaskRunner.Tasks.Test
         [TestMethod]
         public void Execute_Does_Not_Run_Dependent_Jobs_If_Parent_Fails()
         {
-            var runner = new DefaultJobRunnerImpl<Job>();
+            var runner = GetJobRunner();
             var jobs = new[] {
                 new FailingJobImpl(1, "job 1", 1),
                 new DefaultJobImpl(2, "job 2", 1, 1)
@@ -54,6 +54,14 @@ namespace TaskRunner.Tasks.Test
             var results = new List<JobResult>(runner.Execute(jobs));
 
             Assert.AreEqual(1, results.Count);
+        }
+
+        protected DefaultJobRunnerImpl<Job> GetJobRunner()
+        {
+            var repo = new JobRepositoryStub();
+            var seq = new DefaultJobSequencer<Job>();
+
+            return new DefaultJobRunnerImpl<Job>(repo, seq);
         }
 
         protected IList<DefaultJobImpl> GetJobs()
