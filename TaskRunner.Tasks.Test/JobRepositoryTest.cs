@@ -125,5 +125,42 @@ namespace TaskRunner.Tasks.Test
 
             Assert.AreEqual(2, result.Id);
         }
+
+        [TestMethod, Ignore]
+        public void GetNextJobToRun_Returns_Next_Peer_Level_Job_When_First_Peer_Has_Failed()
+        {
+            var repository = new JobRepositoryStub();
+
+            repository.JobHistoryTable.Add(
+                new JobRepositoryStub.JobHistory
+                {
+                    JobId = 1,
+                    ActivityTime = DateTime.Now.AddMinutes(-3),
+                    Successful = true,
+                    Error = string.Empty
+                });
+
+            repository.JobHistoryTable.Add(
+                new JobRepositoryStub.JobHistory
+                {
+                    JobId = 2,
+                    ActivityTime = DateTime.Now.AddMinutes(-2),
+                    Successful = true,
+                    Error = string.Empty
+                });
+
+            repository.JobHistoryTable.Add(
+                new JobRepositoryStub.JobHistory
+                {
+                    JobId = 3,
+                    ActivityTime = DateTime.Now.AddMinutes(-1),
+                    Successful = false,
+                    Error = "Error"
+                });
+
+            var result = repository.GetNextJobToRun();
+
+            Assert.AreEqual(4, result.Id);
+        }
     }
 }

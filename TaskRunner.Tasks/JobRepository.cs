@@ -62,6 +62,14 @@ namespace TaskRunner.Tasks
             return jobHistory.Any();
         }
 
+        protected bool HasRunToday(int jobId)
+        {
+            var jobHistory = JobHistoryTable.Where(x => x.JobId == jobId
+                && x.ActivityTime.Date == DateTime.Today);
+
+            return jobHistory.Any();
+        }
+
         public class JobRecord
         {
             public int Id { get; set; }
