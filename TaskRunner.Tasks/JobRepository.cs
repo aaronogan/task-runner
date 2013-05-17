@@ -49,62 +49,7 @@ namespace TaskRunner.Tasks
         {
             return JobHistoryTable.Where(x => x.JobId == id).Select(x => JobHistoryRecord.ConvertToHistory(x));
         }
-
-        [Obsolete("This needs to be moved into the JobRunner implementation.", true)]
-        public Job GetNextJobToRun()
-        {
-            throw new NotImplementedException();
-
-            //var allJobs = JobTable.Select(x => JobRecord.ConvertToJob(x));
-            //var sequenced = Sequencer.GetSequencedJobs(allJobs);
-
-            //while (sequenced.Any())
-            //{
-            //    var job = sequenced.Dequeue();
-
-            //    if (HasRunSuccessfullyToday(job.Id))
-            //    {
-            //        continue;
-            //    }
-
-            //    if (!job.HasDependency())
-            //    {
-            //        return job;
-            //    }
-
-            //    if (job.HasDependency()
-            //        && DependencyHasRunSuccessfullyToday(job.Id))
-            //    {
-            //        return job;
-            //    }
-            //}
-
-            //return null;
-        }
-
-        //protected bool DependencyHasRunSuccessfullyToday(int jobId)
-        //{
-        //    var dependencyId = JobTable.Single(x => x.Id == jobId).DependencyId;
-        //    return dependencyId.HasValue && HasRunSuccessfullyToday(dependencyId.Value);
-        //}
-
-        //protected bool HasRunSuccessfullyToday(int jobId)
-        //{
-        //    var jobHistory = JobHistoryTable.Where(x => x.JobId == jobId
-        //        && x.ActivityTime.Date == DateTime.Today
-        //        && x.Successful);
-
-        //    return jobHistory.Any();
-        //}
-
-        //protected bool HasRunToday(int jobId)
-        //{
-        //    var jobHistory = JobHistoryTable.Where(x => x.JobId == jobId
-        //        && x.ActivityTime.Date == DateTime.Today);
-
-        //    return jobHistory.Any();
-        //}
-
+       
         public class JobRecord
         {
             public int Id { get; set; }

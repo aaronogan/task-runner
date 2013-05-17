@@ -28,6 +28,7 @@ namespace TaskRunner.Tasks
         public JobHistory RunNextJob()
         {
             var jobToRun = GetNextJobToRun();
+            if (jobToRun == null) return null;
             return jobToRun.Execute();
         }
 
@@ -81,32 +82,6 @@ namespace TaskRunner.Tasks
                 .Where(x => x.ActivityTime.Date == DateTime.Today);
 
             return jobHistory.Any();
-        }
-
-        [Obsolete]
-        public IEnumerable<JobHistory> Execute(IEnumerable<T> jobs)
-        {
-            var queue = Sequencer.GetSequencedJobs(jobs);
-            var results = new List<JobHistory>();
-
-            while (queue.Any())
-            {
-                var jobToProcess = queue.Dequeue();
-
-                var parentJob = jobToProcess.HasDependency() ?
-                    results.SingleOrDefault(x => x.JobId == jobToProcess.DependencyId.Value) :
-                    null;
-
-                bool processJob = parentJob == null || parentJob.Successful;
-
-                if (processJob)
-                {
-                    var result = jobToProcess.Execute();
-                    results.Add(result);
-                }
-            }
-
-            return results;
         }
     }
 }
