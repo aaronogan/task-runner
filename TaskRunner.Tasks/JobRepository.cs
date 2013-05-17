@@ -8,7 +8,9 @@ namespace TaskRunner.Tasks
     public interface JobRepository
     {
         IEnumerable<Job> GetAllJobs();
+        Job GetJob(int id);
         IEnumerable<JobHistory> GetAllHistory();
+        IEnumerable<JobHistory> GetJobHistory(int id);
     }
 
     public class JobRepositoryStub : JobRepository
@@ -32,9 +34,20 @@ namespace TaskRunner.Tasks
             return JobTable.Select(x => JobRecord.ConvertToJob(x));
         }
 
+        public Job GetJob(int id)
+        {
+            var job = JobTable.Single(x => x.Id == id);
+            return JobRecord.ConvertToJob(job);
+        }
+
         public IEnumerable<JobHistory> GetAllHistory()
         {
             return JobHistoryTable.Select(x => JobHistoryRecord.ConvertToHistory(x));
+        }
+
+        public IEnumerable<JobHistory> GetJobHistory(int id)
+        {
+            return JobHistoryTable.Where(x => x.JobId == id).Select(x => JobHistoryRecord.ConvertToHistory(x));
         }
 
         [Obsolete("This needs to be moved into the JobRunner implementation.", true)]
@@ -69,28 +82,28 @@ namespace TaskRunner.Tasks
             //return null;
         }
 
-        protected bool DependencyHasRunSuccessfullyToday(int jobId)
-        {
-            var dependencyId = JobTable.Single(x => x.Id == jobId).DependencyId;
-            return dependencyId.HasValue && HasRunSuccessfullyToday(dependencyId.Value);
-        }
+        //protected bool DependencyHasRunSuccessfullyToday(int jobId)
+        //{
+        //    var dependencyId = JobTable.Single(x => x.Id == jobId).DependencyId;
+        //    return dependencyId.HasValue && HasRunSuccessfullyToday(dependencyId.Value);
+        //}
 
-        protected bool HasRunSuccessfullyToday(int jobId)
-        {
-            var jobHistory = JobHistoryTable.Where(x => x.JobId == jobId
-                && x.ActivityTime.Date == DateTime.Today
-                && x.Successful);
+        //protected bool HasRunSuccessfullyToday(int jobId)
+        //{
+        //    var jobHistory = JobHistoryTable.Where(x => x.JobId == jobId
+        //        && x.ActivityTime.Date == DateTime.Today
+        //        && x.Successful);
 
-            return jobHistory.Any();
-        }
+        //    return jobHistory.Any();
+        //}
 
-        protected bool HasRunToday(int jobId)
-        {
-            var jobHistory = JobHistoryTable.Where(x => x.JobId == jobId
-                && x.ActivityTime.Date == DateTime.Today);
+        //protected bool HasRunToday(int jobId)
+        //{
+        //    var jobHistory = JobHistoryTable.Where(x => x.JobId == jobId
+        //        && x.ActivityTime.Date == DateTime.Today);
 
-            return jobHistory.Any();
-        }
+        //    return jobHistory.Any();
+        //}
 
         public class JobRecord
         {

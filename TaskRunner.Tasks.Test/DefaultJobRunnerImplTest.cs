@@ -6,28 +6,31 @@ namespace TaskRunner.Tasks.Test
     [TestClass]
     public class DependencyJobRunnerImplTest
     {
-        /*
-        [TestMethod]
-        public void GetNextJobToRun_Returns_Null_When_No_Jobs_To_Run()
+        [TestMethod, Ignore]
+        public void RunNextJob_Returns_Null_When_No_Jobs_To_Run()
         {
+            // TODO: Throw an exception instead?
             var repository = new JobRepositoryStub();
             repository.JobTable = new List<JobRepositoryStub.JobRecord>();
             repository.JobHistoryTable = new List<JobRepositoryStub.JobHistoryRecord>();
 
-            var result = repository.GetNextJobToRun();
+            //var result = repository.GetNextJobToRun();
 
-            Assert.IsNull(result);
+            //Assert.IsNull(result);
         }
 
         [TestMethod]
-        public void GetNextJobToRun_Returns_Job_With_No_Dependency_If_No_History_Found()
+        public void RunNextJob_Runs_Job_With_No_Dependency_If_No_History_Found()
         {
             var repository = new JobRepositoryStub();
+            var runner = new DefaultJobRunnerImpl<Job>(repository);
 
-            var result = repository.GetNextJobToRun();
+            var result = runner.RunNextJob();
 
-            Assert.IsFalse(result.HasDependency());
+            Assert.AreEqual(1, result.JobId);
         }
+
+        /*
 
         [TestMethod]
         public void GetNextJobToRun_Returns_Null_If_All_Jobs_Have_Run_Today()
