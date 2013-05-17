@@ -8,6 +8,8 @@ namespace TaskRunner.Tasks
     public interface JobRepository
     {
         IEnumerable<Job> GetAllJobs();
+        IEnumerable<Job> GetJobsWithoutDependencies();
+        IEnumerable<Job> GetChildren(int id);
         Job GetJob(int id);
         IEnumerable<Job> GetPeers(int id);
         IEnumerable<JobHistory> GetAllHistory();
@@ -33,6 +35,16 @@ namespace TaskRunner.Tasks
         public IEnumerable<Job> GetAllJobs()
         {
             return JobTable.Select(x => JobRecord.ConvertToJob(x));
+        }
+
+        public IEnumerable<Job> GetJobsWithoutDependencies()
+        {
+            return JobTable.Where(x => !x.DependencyId.HasValue).Select(x => JobRecord.ConvertToJob(x));
+        }
+
+        public IEnumerable<Job> GetChildren(int id)
+        {
+            return JobTable.Where(x => x.DependencyId.HasValue && x.DependencyId.Value == id).Select(x => JobRecord.ConvertToJob(x));
         }
 
         public Job GetJob(int id)

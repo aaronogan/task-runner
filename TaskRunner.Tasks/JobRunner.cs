@@ -6,69 +6,103 @@ namespace TaskRunner.Tasks
 {
     public interface JobRunner<T> where T : Job
     {
+        Job GetNext();
         JobHistory RunNextJob();
     }
 
     public class DefaultJobRunnerImpl<T> : JobRunner<T> where T : Job
     {
         public DefaultJobRunnerImpl(JobRepository repository)
-            : this (repository, new DefaultJobSequencer<T>())
-        {
-        }
-
-        public DefaultJobRunnerImpl(JobRepository repository, JobSequencer<T> sequencer)
         {
             Repository = repository;
-            Sequencer = sequencer;
         }
 
         protected JobRepository Repository { get; set; }
-        protected JobSequencer<T> Sequencer { get; set; }
 
         public JobHistory RunNextJob()
         {
-            var jobToRun = GetNextJobToRun();
+            var jobToRun = GetNext();
             if (jobToRun == null) return null;
             return jobToRun.Execute();
         }
 
-        protected virtual Job GetNextJobToRun()
+        protected IEnumerable<Job> GetChildren(Job job)
         {
-            var allJobs = Repository.GetAllJobs();
-            var sequenced = Sequencer.GetSequencedJobs((IEnumerable<T>)allJobs);
+            return Repository.GetChildren(job.Id);
+        }
 
-            while (sequenced.Any())
+        protected Job Traverse(Job start)
+        {
+            if (JobShouldRun(start))
             {
-                var job = sequenced.Dequeue();
+                return start;
+            }
 
-                if (HasRunSuccessfullyToday(job.Id))
+            var children = Repository.GetChildren(start.Id);
+
+            foreach (var child in children)
+            {
+                var current = Traverse(child);
+
+                if (current == null)
                 {
                     continue;
                 }
 
-                if (!job.HasDependency())
-                {
-                    return job;
-                }
-
-                if (job.HasDependency()
-                    && DependencyHasRunSuccessfullyToday(job.Id))
-                {
-                    if (HasFailedToday(job.Id))
-                    {
-                        var peer = Repository.GetPeers(job.Id).FirstOrDefault();
-
-                        if (peer != null)
-                        {
-                            return peer;
-                        }
-                    }
-
-                    return job;
-                }
+                return current;
             }
 
             return null;
+        }
+
+        public virtual Job GetNext()
+        {
+            var rootJobs = Repository.GetJobsWithoutDependencies();
+
+            foreach (var job in rootJobs)
+            {
+                var node = Traverse(job);
+
+                if (node == null)
+                {
+                    continue;
+                }
+
+                return node;
+            }
+            
+            return null;
+        }
+
+        protected bool JobShouldRun(Job job)
+        {
+            if (HasRunSuccessfullyToday(job.Id))
+            {
+                return false;
+            }
+
+            if (HasFailedToday(job.Id))
+            {
+                if (HasPeers(job.Id))
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
+            if (!job.HasDependency())
+            {
+                return true;
+            }
+
+            if (job.HasDependency()
+                && DependencyHasRunSuccessfullyToday(job.Id))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         protected bool DependencyHasRunSuccessfullyToday(int jobId)
@@ -84,6 +118,12 @@ namespace TaskRunner.Tasks
                 && x.Successful);
 
             return jobHistory.Any();
+        }
+
+        protected bool HasPeers(int jobId)
+        {
+            var peers = Repository.GetPeers(jobId);
+            return peers.Any();
         }
 
         protected bool HasFailedToday(int jobId)

@@ -7,32 +7,33 @@ namespace TaskRunner.Tasks.Test
     [TestClass]
     public class DependencyJobRunnerImplTest
     {
-        [TestMethod, Ignore]
-        public void RunNextJob_Returns_Null_When_No_Jobs_To_Run()
+        [TestMethod]
+        public void GetNext_Returns_Null_When_No_Jobs_To_Run()
         {
-            // TODO: Throw an exception instead?
             var repository = new JobRepositoryStub();
             repository.JobTable = new List<JobRepositoryStub.JobRecord>();
             repository.JobHistoryTable = new List<JobRepositoryStub.JobHistoryRecord>();
 
-            //var result = repository.GetNextJobToRun();
+            var runner = new DefaultJobRunnerImpl<Job>(repository);
 
-            //Assert.IsNull(result);
+            var result = runner.GetNext();
+
+            Assert.IsNull(result);
         }
 
         [TestMethod]
-        public void RunNextJob_Runs_Job_With_No_Dependency_If_No_History_Found()
+        public void GetNext_Returns_Job_With_No_Dependency_If_No_History_Found()
         {
             var repository = new JobRepositoryStub();
             var runner = new DefaultJobRunnerImpl<Job>(repository);
 
-            var result = runner.RunNextJob();
+            var result = runner.GetNext();
 
-            Assert.AreEqual(1, result.JobId);
+            Assert.AreEqual(1, result.Id);
         }
 
         [TestMethod]
-        public void RunNextJob_Returns_Null_If_All_Jobs_Have_Run_Today()
+        public void GetNext_Returns_Null_If_All_Jobs_Have_Run_Today()
         {
             var repository = new JobRepositoryStub();
             repository.JobTable = new[]
@@ -57,13 +58,13 @@ namespace TaskRunner.Tasks.Test
 
             var runner = new DefaultJobRunnerImpl<Job>(repository);
 
-            var result = runner.RunNextJob();
+            var result = runner.GetNext();
 
             Assert.IsNull(result);
         }
 
         [TestMethod]
-        public void RunNextJob_Runs_First_Job_With_No_Dependency_If_History_Found_For_First()
+        public void GetNext_Returns_First_Job_With_No_Dependency_If_History_Found_For_First()
         {
             var repository = new JobRepositoryStub();
             repository.JobTable = new[]
@@ -94,13 +95,13 @@ namespace TaskRunner.Tasks.Test
 
             var runner = new DefaultJobRunnerImpl<Job>(repository);
 
-            var result = runner.RunNextJob();
+            var result = runner.GetNext();
 
-            Assert.AreEqual(2, result.JobId);
+            Assert.AreEqual(2, result.Id);
         }
 
         [TestMethod]
-        public void RunNextJob_Runs_First_Failed_Job()
+        public void GetNext_Returns_First_Failed_Job()
         {
             var repository = new JobRepositoryStub();
 
@@ -123,13 +124,13 @@ namespace TaskRunner.Tasks.Test
 
             var runner = new DefaultJobRunnerImpl<Job>(repository);
 
-            var result = runner.RunNextJob();
+            var result = runner.GetNext();
 
-            Assert.AreEqual(2, result.JobId);
+            Assert.AreEqual(2, result.Id);
         }
 
         [TestMethod]
-        public void GetNextJobToRun_Returns_Next_Peer_Level_Job_When_First_Peer_Has_Failed()
+        public void GetNext_Retruns_Next_Peer_Level_Job_When_First_Peer_Has_Failed()
         {
             var repository = new JobRepositoryStub();
 
@@ -162,9 +163,60 @@ namespace TaskRunner.Tasks.Test
 
             var runner = new DefaultJobRunnerImpl<Job>(repository);
 
+            var result = runner.GetNext();
+
+            Assert.AreEqual(4, result.Id);
+        }
+
+        /*
+
+        [TestMethod, Ignore]
+        public void RunNextJob_Will_Not_Run_Failed_Peer_Level_Job_Again()
+        {
+            var repository = new JobRepositoryStub();
+
+            repository.JobHistoryTable.Add(
+                new JobRepositoryStub.JobHistoryRecord
+                {
+                    JobId = 1,
+                    ActivityTime = DateTime.Now.AddMinutes(-3),
+                    Successful = true,
+                    Error = string.Empty
+                });
+
+            repository.JobHistoryTable.Add(
+                new JobRepositoryStub.JobHistoryRecord
+                {
+                    JobId = 2,
+                    ActivityTime = DateTime.Now.AddMinutes(-2),
+                    Successful = true,
+                    Error = string.Empty
+                });
+
+            repository.JobHistoryTable.Add(
+                new JobRepositoryStub.JobHistoryRecord
+                {
+                    JobId = 3,
+                    ActivityTime = DateTime.Now.AddMinutes(-1),
+                    Successful = false,
+                    Error = "Error"
+                });
+
+            repository.JobHistoryTable.Add(
+                new JobRepositoryStub.JobHistoryRecord
+                {
+                    JobId = 4,
+                    ActivityTime = DateTime.Now.AddMinutes(-1),
+                    Successful = false,
+                    Error = "Error"
+                });
+
+            var runner = new DefaultJobRunnerImpl<Job>(repository);
+
             var result = runner.RunNextJob();
 
-            Assert.AreEqual(4, result.JobId);
+            Assert.IsNull(result);
         }
+         */
     }
 }
