@@ -60,7 +60,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DefaultJobRunnerImplTest.cs" />
     <Compile Include="DependencyJobSequencerTest.cs" />
-    <Compile Include="JobRepositoryTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TaskRunner.Tasks\TaskRunner.Tasks.csproj">

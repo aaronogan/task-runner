@@ -9,25 +9,20 @@ namespace TaskRunner.Tasks
     {
         IEnumerable<Job> GetAllJobs();
         IEnumerable<JobHistory> GetAllHistory();
-        
-        //[Obsolete]
-        //Job GetNextJobToRun();
     }
 
     public class JobRepositoryStub : JobRepository
     {
         public IList<JobRecord> JobTable { get; set; }
         public IList<JobHistoryRecord> JobHistoryTable { get; set; }
-        //protected JobSequencer<Job> Sequencer { get; set; }
 
         public JobRepositoryStub()
-            : this(new DefaultJobSequencer<Job>(), JobRecord.DefaultRecords, JobHistoryRecord.DefaultRecords)
+            : this(JobRecord.DefaultRecords, JobHistoryRecord.DefaultRecords)
         {
         }
 
-        public JobRepositoryStub(JobSequencer<Job> jobSequencer, IList<JobRecord> jobTable, IList<JobHistoryRecord> jobHistoryTable)
+        public JobRepositoryStub(IList<JobRecord> jobTable, IList<JobHistoryRecord> jobHistoryTable)
         {
-            //Sequencer = jobSequencer;
             JobTable = jobTable;
             JobHistoryTable = jobHistoryTable;
         }
@@ -42,7 +37,7 @@ namespace TaskRunner.Tasks
             return JobHistoryTable.Select(x => JobHistoryRecord.ConvertToHistory(x));
         }
 
-        [Obsolete("This needs to be moved into the JobRunner implementation.")]
+        [Obsolete("This needs to be moved into the JobRunner implementation.", true)]
         public Job GetNextJobToRun()
         {
             throw new NotImplementedException();
