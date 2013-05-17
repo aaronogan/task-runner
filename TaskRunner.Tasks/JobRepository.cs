@@ -30,19 +30,27 @@ namespace TaskRunner.Tasks
 
         public Job GetNextJobToRun()
         {
-            var orderedJobs = JobTable.OrderBy(x => x.Id).OrderBy(x => x.DependencyId);
+            var allJobs = JobTable.Select(x => JobRecord.ConvertToJob(x));
+            var sequenced = Sequencer.GetSequencedJobs(allJobs);
 
-            foreach (var job in orderedJobs)
+            while (sequenced.Any())
             {
+                var job = sequenced.Dequeue();
+
                 if (HasRunSuccessfullyToday(job.Id))
                 {
                     continue;
                 }
 
-                if (!job.DependencyId.HasValue
-                    || DependencyHasRunSuccessfullyToday(job.Id))
+                if (!job.HasDependency())
                 {
-                    return JobRecord.ConvertToJob(job);
+                    return job;
+                }
+
+                if (job.HasDependency()
+                    && DependencyHasRunSuccessfullyToday(job.Id))
+                {
+                    return job;
                 }
             }
 
