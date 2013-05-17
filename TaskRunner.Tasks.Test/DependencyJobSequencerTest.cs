@@ -10,7 +10,7 @@ namespace TaskRunner.Tasks.Test
         public void GetSequencedJobs_Returns_Proper_Number_Of_Jobs()
         {
             var jobs = GetJobs();
-            var scheduler = new DependencyJobSequencer<Job>();
+            var scheduler = new DefaultJobSequencer<Job>();
 
             var scheduled = new List<Job>(scheduler.GetSequencedJobs(jobs));
 
@@ -21,7 +21,7 @@ namespace TaskRunner.Tasks.Test
         public void GetSequencedJobs_Returns_Jobs_With_No_Dependencies_First()
         {
             var jobs = GetJobs();
-            var scheduler = new DependencyJobSequencer<Job>();
+            var scheduler = new DefaultJobSequencer<Job>();
 
             var scheduled = new List<Job>(scheduler.GetSequencedJobs(jobs));
 

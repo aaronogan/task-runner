@@ -8,7 +8,7 @@ namespace TaskRunner.Tasks
         Queue<T> GetSequencedJobs(IEnumerable<T> jobs);
     }
 
-    public class DependencyJobSequencer<T> : JobSequencer<T> where T : Job
+    public class DefaultJobSequencer<T> : JobSequencer<T> where T : Job
     {
         public Queue<T> GetSequencedJobs(IEnumerable<T> jobs)
         {

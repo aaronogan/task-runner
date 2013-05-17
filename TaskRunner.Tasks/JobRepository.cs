@@ -17,7 +17,7 @@ namespace TaskRunner.Tasks
         protected JobSequencer<Job> Sequencer { get; set; }
 
         public JobRepositoryStub()
-            : this(new DependencyJobSequencer<Job>(), JobRecord.DefaultRecords, JobHistory.DefaultRecords)
+            : this(new DefaultJobSequencer<Job>(), JobRecord.DefaultRecords, JobHistory.DefaultRecords)
         {
         }
 
