@@ -9,15 +9,13 @@ namespace TaskRunner.Tasks
     {
         IEnumerable<Job> GetAllJobs();
         Job GetJob(int id);
+        IEnumerable<Job> GetPeers(int id);
         IEnumerable<JobHistory> GetAllHistory();
         IEnumerable<JobHistory> GetJobHistory(int id);
     }
 
     public class JobRepositoryStub : JobRepository
     {
-        public IList<JobRecord> JobTable { get; set; }
-        public IList<JobHistoryRecord> JobHistoryTable { get; set; }
-
         public JobRepositoryStub()
             : this(JobRecord.DefaultRecords, JobHistoryRecord.DefaultRecords)
         {
@@ -29,6 +27,9 @@ namespace TaskRunner.Tasks
             JobHistoryTable = jobHistoryTable;
         }
 
+        public IList<JobRecord> JobTable { get; set; }
+        public IList<JobHistoryRecord> JobHistoryTable { get; set; }
+
         public IEnumerable<Job> GetAllJobs()
         {
             return JobTable.Select(x => JobRecord.ConvertToJob(x));
@@ -38,6 +39,22 @@ namespace TaskRunner.Tasks
         {
             var job = JobTable.Single(x => x.Id == id);
             return JobRecord.ConvertToJob(job);
+        }
+
+        public IEnumerable<Job> GetPeers(int id)
+        {
+            var job = JobTable.Single(x => x.Id == id);
+
+            if (job.DependencyId.HasValue)
+            {
+                var peers = JobTable.Where(x => x.DependencyId.HasValue
+                    && x.DependencyId.Value == job.DependencyId.Value
+                    && x.Id != id);
+
+                return peers.Select(x => JobRecord.ConvertToJob(x));
+            }
+
+            return new List<Job>();
         }
 
         public IEnumerable<JobHistory> GetAllHistory()

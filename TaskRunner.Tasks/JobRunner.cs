@@ -11,9 +11,6 @@ namespace TaskRunner.Tasks
 
     public class DefaultJobRunnerImpl<T> : JobRunner<T> where T : Job
     {
-        protected JobRepository Repository { get; set; }
-        protected JobSequencer<T> Sequencer { get; set; }
-
         public DefaultJobRunnerImpl(JobRepository repository)
             : this (repository, new DefaultJobSequencer<T>())
         {
@@ -24,6 +21,9 @@ namespace TaskRunner.Tasks
             Repository = repository;
             Sequencer = sequencer;
         }
+
+        protected JobRepository Repository { get; set; }
+        protected JobSequencer<T> Sequencer { get; set; }
 
         public JobHistory RunNextJob()
         {
@@ -54,6 +54,16 @@ namespace TaskRunner.Tasks
                 if (job.HasDependency()
                     && DependencyHasRunSuccessfullyToday(job.Id))
                 {
+                    if (HasFailedToday(job.Id))
+                    {
+                        var peer = Repository.GetPeers(job.Id).FirstOrDefault();
+
+                        if (peer != null)
+                        {
+                            return peer;
+                        }
+                    }
+
                     return job;
                 }
             }
@@ -76,10 +86,11 @@ namespace TaskRunner.Tasks
             return jobHistory.Any();
         }
 
-        protected bool HasRunToday(int jobId)
+        protected bool HasFailedToday(int jobId)
         {
             var jobHistory = Repository.GetJobHistory(jobId)
-                .Where(x => x.ActivityTime.Date == DateTime.Today);
+                .Where(x => x.ActivityTime.Date == DateTime.Today
+                && !x.Successful);
 
             return jobHistory.Any();
         }

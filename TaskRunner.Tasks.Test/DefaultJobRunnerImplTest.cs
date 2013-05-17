@@ -128,8 +128,7 @@ namespace TaskRunner.Tasks.Test
             Assert.AreEqual(2, result.JobId);
         }
 
-        /*
-        [TestMethod, Ignore]
+        [TestMethod]
         public void GetNextJobToRun_Returns_Next_Peer_Level_Job_When_First_Peer_Has_Failed()
         {
             var repository = new JobRepositoryStub();
@@ -161,11 +160,11 @@ namespace TaskRunner.Tasks.Test
                     Error = "Error"
                 });
 
-            var result = repository.GetNextJobToRun();
+            var runner = new DefaultJobRunnerImpl<Job>(repository);
 
-            Assert.AreEqual(4, result.Id);
+            var result = runner.RunNextJob();
+
+            Assert.AreEqual(4, result.JobId);
         }
-    */
-
     }
 }
