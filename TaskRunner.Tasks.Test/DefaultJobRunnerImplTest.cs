@@ -168,9 +168,7 @@ namespace TaskRunner.Tasks.Test
             Assert.AreEqual(4, result.Id);
         }
 
-        /*
-
-        [TestMethod, Ignore]
+        [TestMethod]
         public void RunNextJob_Will_Not_Run_Failed_Peer_Level_Job_Again()
         {
             var repository = new JobRepositoryStub();
@@ -217,6 +215,5 @@ namespace TaskRunner.Tasks.Test
 
             Assert.IsNull(result);
         }
-         */
     }
 }

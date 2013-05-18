@@ -31,6 +31,25 @@ namespace TaskRunner.Tasks
             return Repository.GetChildren(job.Id);
         }
 
+        public virtual Job GetNext()
+        {
+            var rootJobs = Repository.GetJobsWithoutDependencies();
+
+            foreach (var job in rootJobs)
+            {
+                var node = Traverse(job);
+
+                if (node == null)
+                {
+                    continue;
+                }
+
+                return node;
+            }
+            
+            return null;
+        }
+
         protected Job Traverse(Job start)
         {
             if (JobShouldRun(start))
@@ -52,25 +71,6 @@ namespace TaskRunner.Tasks
                 return current;
             }
 
-            return null;
-        }
-
-        public virtual Job GetNext()
-        {
-            var rootJobs = Repository.GetJobsWithoutDependencies();
-
-            foreach (var job in rootJobs)
-            {
-                var node = Traverse(job);
-
-                if (node == null)
-                {
-                    continue;
-                }
-
-                return node;
-            }
-            
             return null;
         }
 
