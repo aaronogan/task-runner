@@ -72,6 +72,7 @@ namespace TaskRunner.Tasks
             return new JobHistory
             {
                 JobId = Id,
+                ActivityTime = DateTime.Now,
                 Successful = Timer.Elapsed.TotalMinutes < MaxDurationMinutes
             };
         }
@@ -83,6 +84,12 @@ namespace TaskRunner.Tasks
         public DateTime ActivityTime { get; set; }
         public bool Successful { get; set; }
         public string Error { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("JobId: [{0}], ActivityTime: [{1}], Successful: [{2}], Error: [{3}]",
+                JobId, ActivityTime.ToString("MM/dd/yyyy hh:mm:ss"), Successful, Error);
+        }
     }
 
     public static class JobHelpers
