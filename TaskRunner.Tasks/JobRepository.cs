@@ -14,14 +14,13 @@ namespace TaskRunner.Tasks
         IEnumerable<Job> GetPeers(int id);
         IEnumerable<JobHistory> GetAllHistory();
         IEnumerable<JobHistory> GetJobHistory(int id);
-
         void Save(JobHistory history);
     }
 
     public class JobRepositoryStub : JobRepository
     {
         public JobRepositoryStub()
-            : this(JobRecord.DefaultRecords, JobHistoryRecord.DefaultRecords)
+            : this(JobRecord.DefaultRecords.ToList(), JobHistoryRecord.DefaultRecords.ToList())
         {
         }
 
@@ -83,8 +82,6 @@ namespace TaskRunner.Tasks
 
         public void Save(JobHistory history)
         {
-            //throw new NotImplementedException();
-
             JobHistoryTable.Add(new JobHistoryRecord
                 {
                     JobId = history.JobId,
