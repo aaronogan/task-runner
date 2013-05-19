@@ -9,25 +9,27 @@ namespace TaskRunner.Tasks
         int Id { get; set; }
         int? DependencyId { get; set; }
         string Name { get; set; }
-        int MaxDurationMinutes { get; set; }
+        int MaxDurationSeconds { get; set; }
+        int MaxDurationMinutes { get; }
 
         JobHistory Execute();
     }
 
     public abstract class JobBase : Job
     {
-        public JobBase(int id, string name, int maxDurationMinutes, int? dependencyId = null)
+        public JobBase(int id, string name, int maxDurationSeconds, int? dependencyId = null)
         {
             Id = id;
             DependencyId = dependencyId;
             Name = name;
-            MaxDurationMinutes = maxDurationMinutes;
+            MaxDurationSeconds = maxDurationSeconds;
         }
 
         public int Id { get; set; }
         public int? DependencyId { get; set; }
         public string Name { get; set; }
-        public int MaxDurationMinutes { get; set; }
+        public int MaxDurationSeconds { get; set; }
+        public int MaxDurationMinutes { get { return MaxDurationSeconds * 60; } }
 
         protected abstract void OnExecuteBegin();
         protected abstract void OnExecuteEnd();
@@ -73,7 +75,7 @@ namespace TaskRunner.Tasks
             {
                 JobId = Id,
                 ActivityTime = DateTime.Now,
-                Successful = Timer.Elapsed.TotalMinutes < MaxDurationMinutes
+                Successful = Timer.Elapsed.TotalSeconds < MaxDurationSeconds
             };
         }
     }

@@ -17,10 +17,10 @@ namespace TaskRunner.Tasks.Test
             Assert.IsTrue(result.Successful);
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         public void Job_Exceeding_MaxDuration_Fails()
         {
-            var job = new DefinedTimeJob("long", 1, new TimeSpan(0, 1, 1));
+            var job = new DefinedTimeJob("long", 1, new TimeSpan(0, 0, 2));
 
             var result = job.Execute();
 
