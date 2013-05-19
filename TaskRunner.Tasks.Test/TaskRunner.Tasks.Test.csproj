@@ -55,7 +55,7 @@
   <ItemGroup>
     <Compile Include="DefaultJobImplTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DefaultJobRunnerImplTest.cs" />
+    <Compile Include="DefaultJobRunnerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TaskRunner.Tasks\TaskRunner.Tasks.csproj">

@@ -11,7 +11,7 @@ namespace TaskRunner.App
         static void Main(string[] args)
         {
             var repository = new JobRepositoryStub();
-            var runner = new DefaultJobRunnerImpl<Job>(repository);
+            var runner = new DefaultJobRunner(repository);
 
             var result = runner.RunNextJob();
 

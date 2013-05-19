@@ -4,15 +4,15 @@ using System.Linq;
 
 namespace TaskRunner.Tasks
 {
-    public interface JobRunner<T> where T : Job
+    public interface JobRunner
     {
         Job GetNext();
         JobHistory RunNextJob();
     }
 
-    public class DefaultJobRunnerImpl<T> : JobRunner<T> where T : Job
+    public class DefaultJobRunner : JobRunner
     {
-        public DefaultJobRunnerImpl(JobRepository repository)
+        public DefaultJobRunner(JobRepository repository)
         {
             Repository = repository;
         }

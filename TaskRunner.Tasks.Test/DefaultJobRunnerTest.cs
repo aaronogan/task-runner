@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace TaskRunner.Tasks.Test
 {
     [TestClass]
-    public class DependencyJobRunnerImplTest
+    public class DefaultJobRunnerTest
     {
         [TestMethod]
         public void GetNext_Returns_Null_When_No_Jobs_To_Run()
@@ -14,7 +14,7 @@ namespace TaskRunner.Tasks.Test
             repository.JobTable = new List<JobRepositoryStub.JobRecord>();
             repository.JobHistoryTable = new List<JobRepositoryStub.JobHistoryRecord>();
 
-            var runner = new DefaultJobRunnerImpl<Job>(repository);
+            var runner = new DefaultJobRunner(repository);
 
             var result = runner.GetNext();
 
@@ -25,7 +25,7 @@ namespace TaskRunner.Tasks.Test
         public void GetNext_Returns_Job_With_No_Dependency_If_No_History_Found()
         {
             var repository = new JobRepositoryStub();
-            var runner = new DefaultJobRunnerImpl<Job>(repository);
+            var runner = new DefaultJobRunner(repository);
 
             var result = runner.GetNext();
 
@@ -56,7 +56,7 @@ namespace TaskRunner.Tasks.Test
                     }
                 };
 
-            var runner = new DefaultJobRunnerImpl<Job>(repository);
+            var runner = new DefaultJobRunner(repository);
 
             var result = runner.GetNext();
 
@@ -93,7 +93,7 @@ namespace TaskRunner.Tasks.Test
                     }
                 };
 
-            var runner = new DefaultJobRunnerImpl<Job>(repository);
+            var runner = new DefaultJobRunner(repository);
 
             var result = runner.GetNext();
 
@@ -122,7 +122,7 @@ namespace TaskRunner.Tasks.Test
                     Error = "Error"
                 });
 
-            var runner = new DefaultJobRunnerImpl<Job>(repository);
+            var runner = new DefaultJobRunner(repository);
 
             var result = runner.GetNext();
 
@@ -161,7 +161,7 @@ namespace TaskRunner.Tasks.Test
                     Error = "Error"
                 });
 
-            var runner = new DefaultJobRunnerImpl<Job>(repository);
+            var runner = new DefaultJobRunner(repository);
 
             var result = runner.GetNext();
 
@@ -209,7 +209,7 @@ namespace TaskRunner.Tasks.Test
                     Error = "Error"
                 });
 
-            var runner = new DefaultJobRunnerImpl<Job>(repository);
+            var runner = new DefaultJobRunner(repository);
 
             var result = runner.RunNextJob();
 
@@ -221,7 +221,7 @@ namespace TaskRunner.Tasks.Test
         {
             var repository = new JobRepositoryStub();
 
-            var runner = new DefaultJobRunnerImpl<Job>(repository);
+            var runner = new DefaultJobRunner(repository);
 
             var result = runner.RunNextJob();
 
