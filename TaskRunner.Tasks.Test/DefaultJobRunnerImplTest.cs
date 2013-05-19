@@ -215,5 +215,17 @@ namespace TaskRunner.Tasks.Test
 
             Assert.IsNull(result);
         }
+
+        [TestMethod]
+        public void RunNextJob_Saves_New_History_Record()
+        {
+            var repository = new JobRepositoryStub();
+
+            var runner = new DefaultJobRunnerImpl<Job>(repository);
+
+            var result = runner.RunNextJob();
+
+            Assert.AreEqual(1, repository.JobHistoryTable.Count);
+        }
     }
 }

@@ -23,7 +23,11 @@ namespace TaskRunner.Tasks
         {
             var jobToRun = GetNext();
             if (jobToRun == null) return null;
-            return jobToRun.Execute();
+
+            var result = jobToRun.Execute();
+            Repository.Save(result);
+
+            return result;
         }
 
         protected IEnumerable<Job> GetChildren(Job job)

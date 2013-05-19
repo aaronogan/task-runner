@@ -14,6 +14,8 @@ namespace TaskRunner.Tasks
         IEnumerable<Job> GetPeers(int id);
         IEnumerable<JobHistory> GetAllHistory();
         IEnumerable<JobHistory> GetJobHistory(int id);
+
+        void Save(JobHistory history);
     }
 
     public class JobRepositoryStub : JobRepository
@@ -77,6 +79,19 @@ namespace TaskRunner.Tasks
         public IEnumerable<JobHistory> GetJobHistory(int id)
         {
             return JobHistoryTable.Where(x => x.JobId == id).Select(x => JobHistoryRecord.ConvertToHistory(x));
+        }
+
+        public void Save(JobHistory history)
+        {
+            //throw new NotImplementedException();
+
+            JobHistoryTable.Add(new JobHistoryRecord
+                {
+                    JobId = history.JobId,
+                    ActivityTime = history.ActivityTime,
+                    Successful = history.Successful,
+                    Error = history.Error
+                });
         }
        
         public class JobRecord
