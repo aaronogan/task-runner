@@ -132,7 +132,7 @@ namespace TaskRunner.Tasks
             public static Job ConvertToJob(JobRecord record)
             {
                 if (record == null) return null;
-                return new DefaultJobImpl(record.Id, record.Name, record.MaxDurationMinutes, record.DependencyId);
+                return new DefaultJob(record.Id, record.Name, record.MaxDurationMinutes, record.DependencyId);
             }
         }
 

@@ -43,9 +43,9 @@ namespace TaskRunner.Tasks
         }
     }
 
-    public class DefaultJobImpl : JobBase
+    public class DefaultJob : JobBase
     {
-        public DefaultJobImpl(int id, string name, int maxDurationMinutes, int? dependencyId = null)
+        public DefaultJob(int id, string name, int maxDurationMinutes, int? dependencyId = null)
             : base(id, name, maxDurationMinutes, dependencyId)
         {
             Timer = new Stopwatch();

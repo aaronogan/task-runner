@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace TaskRunner.Tasks.Test
 {
     [TestClass]
-    public class DefaultJobImplTest
+    public class DefaultJobTest
     {
         [TestMethod]
         public void Job_Less_Than_MaxDuration_Succeeds()
@@ -27,7 +27,7 @@ namespace TaskRunner.Tasks.Test
             Assert.IsFalse(result.Successful);
         }
 
-        public class DefinedTimeJob : DefaultJobImpl
+        public class DefinedTimeJob : DefaultJob
         {
             private TimeSpan _executionTime;
 
