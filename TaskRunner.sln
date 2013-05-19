@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskRunner.Tasks.Test", "Ta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskRunner.App", "TaskRunner.App\TaskRunner.App.csproj", "{1023A578-8845-48BA-9525-448D34B625EB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PropertyManagement", "PropertyManagement\PropertyManagement.csproj", "{C38198B2-BA34-480F-A8C0-6ACF068410D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{1023A578-8845-48BA-9525-448D34B625EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1023A578-8845-48BA-9525-448D34B625EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1023A578-8845-48BA-9525-448D34B625EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C38198B2-BA34-480F-A8C0-6ACF068410D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C38198B2-BA34-480F-A8C0-6ACF068410D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C38198B2-BA34-480F-A8C0-6ACF068410D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C38198B2-BA34-480F-A8C0-6ACF068410D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
