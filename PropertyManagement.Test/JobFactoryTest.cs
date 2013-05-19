@@ -31,5 +31,13 @@ namespace PropertyManagement.Test
 
             Assert.IsInstanceOfType(job, typeof(LateFeesJob));
         }
+
+        [TestMethod]
+        public void GetJob_Returns_Proper_Implementation_For_Eft_Payments()
+        {
+            var job = JobFactory.GetJob(4, "Bill customers for EFT payments", 30 * 60, 2);
+
+            Assert.IsInstanceOfType(job, typeof(BillForEftPaymentsJob));
+        }
     }
 }
