@@ -96,7 +96,7 @@ namespace TaskRunner.Tasks
             public int Id { get; set; }
             public int? DependencyId { get; set; }
             public string Name { get; set; }
-            public int MaxDurationMinutes { get; set; }
+            public int MaxDurationSeconds { get; set; }
 
             public static IList<JobRecord> DefaultRecords = new[]
             {
@@ -104,35 +104,35 @@ namespace TaskRunner.Tasks
                 {
                     Id = 1,
                     Name = "Rent Charges",
-                    MaxDurationMinutes = 20
+                    MaxDurationSeconds = 20
                 },
                 new JobRecord
                 {
                     Id = 2,
                     DependencyId = 1,
                     Name = "Rent Payments",
-                    MaxDurationMinutes = 20
+                    MaxDurationSeconds = 20
                 },
                 new JobRecord
                 {
                     Id = 3,
                     DependencyId = 2,
                     Name = "Late Fees",
-                    MaxDurationMinutes = 60,
+                    MaxDurationSeconds = 60,
                 },
                 new JobRecord
                 {
                     Id = 4,
                     DependencyId = 2,
                     Name = "Bill customers for EFT payments",
-                    MaxDurationMinutes = 30
+                    MaxDurationSeconds = 30
                 }
             };
 
             public static Job ConvertToJob(JobRecord record)
             {
                 if (record == null) return null;
-                return new DefaultJob(record.Id, record.Name, record.MaxDurationMinutes, record.DependencyId);
+                return new DefaultJob(record.Id, record.Name, record.MaxDurationSeconds, record.DependencyId);
             }
         }
 

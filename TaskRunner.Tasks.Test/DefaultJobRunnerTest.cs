@@ -42,7 +42,7 @@ namespace TaskRunner.Tasks.Test
                     {
                         Id = 1,
                         DependencyId = null,
-                        MaxDurationMinutes = 1,
+                        MaxDurationSeconds = 1,
 
                     }
                 };
@@ -73,14 +73,14 @@ namespace TaskRunner.Tasks.Test
                     {
                         Id = 1,
                         DependencyId = null,
-                        MaxDurationMinutes = 1,
+                        MaxDurationSeconds = 1,
 
                     },
                     new JobRepositoryStub.JobRecord
                     {
                         Id = 2,
                         DependencyId = null,
-                        MaxDurationMinutes = 1,
+                        MaxDurationSeconds = 1,
                     }
                 };
             repository.JobHistoryTable = new[]

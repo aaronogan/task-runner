@@ -10,7 +10,6 @@ namespace TaskRunner.Tasks
         int? DependencyId { get; set; }
         string Name { get; set; }
         int MaxDurationSeconds { get; set; }
-        int MaxDurationMinutes { get; }
 
         JobHistory Execute();
     }
@@ -29,7 +28,6 @@ namespace TaskRunner.Tasks
         public int? DependencyId { get; set; }
         public string Name { get; set; }
         public int MaxDurationSeconds { get; set; }
-        public int MaxDurationMinutes { get { return MaxDurationSeconds * 60; } }
 
         protected abstract void OnExecuteBegin();
         protected abstract void OnExecuteEnd();
@@ -47,8 +45,8 @@ namespace TaskRunner.Tasks
 
     public class DefaultJob : JobBase
     {
-        public DefaultJob(int id, string name, int maxDurationMinutes, int? dependencyId = null)
-            : base(id, name, maxDurationMinutes, dependencyId)
+        public DefaultJob(int id, string name, int maxDurationSeconds, int? dependencyId = null)
+            : base(id, name, maxDurationSeconds, dependencyId)
         {
             Timer = new Stopwatch();
         }
