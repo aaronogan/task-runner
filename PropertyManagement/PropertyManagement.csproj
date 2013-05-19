@@ -42,6 +42,7 @@
     <Compile Include="JobFactory.cs" />
     <Compile Include="RentChargesJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RentPaymentsJob.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TaskRunner.Tasks\TaskRunner.Tasks.csproj">

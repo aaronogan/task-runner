@@ -6,7 +6,7 @@ using TaskRunner.Tasks;
 
 namespace PropertyManagement
 {
-    public class JobFactory
+    public static class JobFactory
     {
         public static Job GetJob(int id, string name, int maxDurationSeconds, int? dependencyId)
         {
@@ -14,11 +14,11 @@ namespace PropertyManagement
             {
                 case "rent charges":
                     return new RentChargesJob(id, name, maxDurationSeconds, dependencyId);
+                case "rent payments":
+                    return new RentPaymentsJob(id, name, maxDurationSeconds, dependencyId);
                 default:
                     return new DefaultJob(id, name, maxDurationSeconds, dependencyId);
             }
-
-            throw new NotImplementedException();
         }
     }
 }
