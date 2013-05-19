@@ -19,9 +19,17 @@ namespace PropertyManagement.Test
         [TestMethod]
         public void GetJob_Returns_Proper_Implementation_For_Rent_Payments()
         {
-            var job = JobFactory.GetJob(1, "Rent Payments", 20 * 60, 1);
+            var job = JobFactory.GetJob(2, "Rent Payments", 20 * 60, 1);
 
             Assert.IsInstanceOfType(job, typeof(RentPaymentsJob));
+        }
+
+        [TestMethod]
+        public void GetJob_Returns_Proper_Implementation_For_Late_Fees()
+        {
+            var job = JobFactory.GetJob(3, "Late Fees", 60 * 60, 2);
+
+            Assert.IsInstanceOfType(job, typeof(LateFeesJob));
         }
     }
 }

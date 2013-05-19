@@ -16,6 +16,8 @@ namespace PropertyManagement
                     return new RentChargesJob(id, name, maxDurationSeconds, dependencyId);
                 case "rent payments":
                     return new RentPaymentsJob(id, name, maxDurationSeconds, dependencyId);
+                case "late fees":
+                    return new LateFeesJob(id, name, maxDurationSeconds, dependencyId);
                 default:
                     return new DefaultJob(id, name, maxDurationSeconds, dependencyId);
             }
