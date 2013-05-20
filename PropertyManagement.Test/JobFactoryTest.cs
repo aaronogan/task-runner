@@ -39,5 +39,11 @@ namespace PropertyManagement.Test
 
             Assert.IsInstanceOfType(job, typeof(BillForEftPaymentsJob));
         }
+
+        [TestMethod, ExpectedException(typeof(InvalidOperationException))]
+        public void GetJob_Throws_An_Exception_For_Unrecognized_Type()
+        {
+            var job = JobFactory.GetJob(5, "Unrecognized", 20 * 60, 2);
+        }
     }
 }

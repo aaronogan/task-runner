@@ -22,7 +22,7 @@ namespace PropertyManagement
                 case "bill customers for eft payments":
                     return new BillForEftPaymentsJob(id, name, maxDurationSeconds, dependencyId);
                 default:
-                    return new DefaultJob(id, name, maxDurationSeconds, dependencyId);
+                    throw new InvalidOperationException("Unrecognized job type: " + name);
             }
         }
     }
