@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TaskRunner.App")]
+[assembly: AssemblyTitle("PropertyManagement.App")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TaskRunner.App")]
+[assembly: AssemblyProduct("PropertyManagement.App")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("416ea9e2-809a-435c-881c-39315f291b8c")]
+[assembly: Guid("4c3a9848-694e-4e62-aa8c-ac4a49eb71d9")]
 
 // Version information for an assembly consists of the following four values:
 //
