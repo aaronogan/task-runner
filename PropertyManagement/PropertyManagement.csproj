@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BillForEftPaymentsJob.cs" />
+    <Compile Include="BillingJobRepositoryStub.cs" />
     <Compile Include="JobFactory.cs" />
     <Compile Include="LateFeesJob.cs" />
     <Compile Include="RentChargesJob.cs" />

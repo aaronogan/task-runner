@@ -35,23 +35,23 @@ namespace TaskRunner.Tasks
 
         public IEnumerable<Job> GetAllJobs()
         {
-            return JobTable.Select(x => JobRecord.ConvertToJob(x));
+            return JobTable.Select(x => ConvertToJob(x));
         }
 
         public IEnumerable<Job> GetJobsWithoutDependencies()
         {
-            return JobTable.Where(x => !x.DependencyId.HasValue).Select(x => JobRecord.ConvertToJob(x));
+            return JobTable.Where(x => !x.DependencyId.HasValue).Select(x => ConvertToJob(x));
         }
 
         public IEnumerable<Job> GetChildren(int id)
         {
-            return JobTable.Where(x => x.DependencyId.HasValue && x.DependencyId.Value == id).Select(x => JobRecord.ConvertToJob(x));
+            return JobTable.Where(x => x.DependencyId.HasValue && x.DependencyId.Value == id).Select(x => ConvertToJob(x));
         }
 
         public Job GetJob(int id)
         {
             var job = JobTable.Single(x => x.Id == id);
-            return JobRecord.ConvertToJob(job);
+            return ConvertToJob(job);
         }
 
         public IEnumerable<Job> GetPeers(int id)
@@ -64,7 +64,7 @@ namespace TaskRunner.Tasks
                     && x.DependencyId.Value == job.DependencyId.Value
                     && x.Id != id);
 
-                return peers.Select(x => JobRecord.ConvertToJob(x));
+                return peers.Select(x => ConvertToJob(x));
             }
 
             return new List<Job>();
@@ -90,7 +90,13 @@ namespace TaskRunner.Tasks
                     Error = history.Error
                 });
         }
-       
+
+        protected virtual Job ConvertToJob(JobRecord record)
+        {
+            if (record == null) return null;
+            return new DefaultJob(record.Id, record.Name, record.MaxDurationSeconds, record.DependencyId);
+        }
+
         public class JobRecord
         {
             public int Id { get; set; }
@@ -128,12 +134,6 @@ namespace TaskRunner.Tasks
                     MaxDurationSeconds = 30
                 }
             };
-
-            public static Job ConvertToJob(JobRecord record)
-            {
-                if (record == null) return null;
-                return new DefaultJob(record.Id, record.Name, record.MaxDurationSeconds, record.DependencyId);
-            }
         }
 
         public class JobHistoryRecord

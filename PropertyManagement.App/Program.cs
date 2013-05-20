@@ -11,7 +11,7 @@ namespace PropertyManagement.App
     {
         static void Main(string[] args)
         {
-            var repository = new JobRepositoryStub();
+            var repository = new BillingJobRepositoryStub();
             var runner = new DefaultJobRunner(repository);
 
             var result = runner.RunNextJob();
